@@ -1,0 +1,408 @@
+* {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.hero {
+  background: url('https://clickstyle.co.uk/cdn/shop/collections/living-room-furniture-click-style.jpg?v=1708710476') no-repeat center center;
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 4rem;
+  color: white;
+}
+
+
+.heroContent h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.heroContent p {
+  max-width: 500px;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  font-size: 1.1rem;
+}
+
+.heroContent button {
+  padding: 10px 20px;
+  border: 1px solid white;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+}
+
+.productsWeek {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.productGrid {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.productCard img {
+  width: 200px;
+  height: auto;
+}
+
+.productCard h3 {
+  margin: 0.5rem 0;
+}
+
+.productCard p {
+  color: #666;
+}
+
+.bannerSection {
+  background: url('https://www.hafele.com/INTERSHOP/static/WFS/Haefele-HAC-Site/-/Haefele-HAC/en_US/opentext/assets/hac/Loox_Animation-Video_5_neu.gif') no-repeat center center;
+  background-size: cover;
+  height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 4rem;
+  position: relative;
+  color: white;
+}
+
+.bannerSection::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3); 
+}
+
+.bannerContent {
+  position: relative;
+  z-index: 2;
+  max-width: 400px;
+  text-align: right;
+}
+
+.bannerContent p {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.bannerContent button {
+  padding: 10px 20px;
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+  cursor: pointer;
+}
+
+.stylishChairs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4rem 6rem;
+  background-color: #fff;
+  gap: 4rem;
+}
+
+.chairContent {
+  flex: 1;
+}
+
+.chairContent h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.chairContent p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+  max-width: 400px;
+}
+
+.chairContent button {
+  padding: 10px 20px;
+  border: 1px solid #333;
+  background: transparent;
+  cursor: pointer;
+}
+
+.chairImage {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.chairImage img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.tableSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4rem 6rem;
+  background-color: #fff;
+  gap: 4rem;
+}
+
+.tableImage {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.tableImage img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.tableContent {
+  flex: 1;
+  text-align: left;
+}
+
+.tableContent h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.tableContent p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+  max-width: 400px;
+}
+
+.tableContent button {
+  padding: 10px 20px;
+  border: 1px solid #333;
+  background: transparent;
+  cursor: pointer;
+}
+
+.contemporaryLamps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4rem 6rem;
+  background-color: #fff;
+  gap: 4rem;
+}
+
+.lampContent {
+  flex: 1;
+  text-align: left;
+}
+
+.lampContent h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.lampContent p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+  max-width: 400px;
+}
+
+.lampContent button {
+  padding: 10px 20px;
+  border: 1px solid #333;
+  background: transparent;
+  cursor: pointer;
+}
+
+.lampImage {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.lampImage img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.deliveryBanner {
+  background-color: #f1f1f1;
+  position: relative;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 4rem;
+}
+
+.deliveryBanner p {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+}
+
+.deliveryBanner button {
+  padding: 10px 20px;
+  border: 1px solid #333;
+  background: transparent;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+
+.deliveryBanner button:hover {
+  background-color: #e0e0e0;
+}
+
+.services {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 4rem 6rem;
+  text-align: center;
+  flex-wrap: wrap;
+}
+
+.service {
+  flex: 1;
+  min-width: 180px;
+  max-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  width: 50px;
+  height: 50px;
+  border: 1.5px solid #333;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.service h4 {
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+}
+
+.service p {
+  font-size: 0.99rem;
+  color: #666;
+  line-height: 1.4;
+}
+
+.blog {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  padding: 4rem 6rem;
+  flex-wrap: wrap;
+}
+
+.blogPost {
+  max-width: 400px;
+  text-align: center;
+}
+
+.blogPost img {
+  width: 100%;
+  height: 250px; 
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+}
+
+
+.blogPost .date {
+  margin: 1rem 0 0.5rem;
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.blogPost h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #222;
+}
+
+.blogPost a {
+  font-size: 0.85rem;
+  color: #333;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.quote {
+  background-color: #f1f1f1;
+  padding: 4rem 2rem;
+  text-align: center;
+  position: relative;
+  color: #444;
+}
+
+.quoteIcon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 1rem;
+  color: #111;
+}
+
+.quoteText {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #666;
+}
+
+.arrows {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2rem;
+  transform: translateY(-50%);
+}
+
+.arrow {
+  font-size: 2rem;
+  color: #333;
+  cursor: pointer;
+  user-select: none;
+}
+
+.author {
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.author strong {
+  font-weight: bold;
+  font-size: 1rem;
+}
