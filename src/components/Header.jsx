@@ -26,7 +26,9 @@ const Header = () => {
         <button className={styles.loginBtn} onClick={() => navigate('/login')}>
           Login
         </button>
-        <button className={styles.loginBtn}>Register</button>
+        <button className={styles.loginBtn} onClick={() => navigate('/register')}>
+          Register
+        </button>
       </div>
     </header>
   );
