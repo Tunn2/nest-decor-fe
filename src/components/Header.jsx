@@ -1,8 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../styles/Header.module.css";
 
 const Header = () => {
+  const navigate = useNavigate();
+
   return (
     <header className={styles.header}>
       <div className={styles.logo}>DecoNest</div>
@@ -21,7 +23,10 @@ const Header = () => {
         <button className={styles.iconBtn}>
           <span role="img" aria-label="cart">🛍️</span>
         </button>
-        <button className={styles.loginBtn}>Login / Register</button>
+        <button className={styles.loginBtn} onClick={() => navigate('/login')}>
+          Login
+        </button>
+        <button className={styles.loginBtn}>Register</button>
       </div>
     </header>
   );
