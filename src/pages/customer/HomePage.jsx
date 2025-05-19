@@ -8,7 +8,6 @@ const HomePage = () => {
         <>
             <Header />
             <div className={styles.home}>
-                {/* Hero Section */}
                 <section className={styles.hero}>
                     <div className={styles.heroContent}>
                         <h1>ALL FOR YOUR HOME</h1>
@@ -19,7 +18,6 @@ const HomePage = () => {
                     </div>
                 </section>
 
-                {/* Products of the Week */}
                 <section className={styles.productsWeek}>
                     <h2>PRODUCTS OF THE WEEK</h2>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat dolor odio odio malesuada at condimentum adipiscing iaculis semper.</p>
