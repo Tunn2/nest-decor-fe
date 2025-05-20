@@ -1,0 +1,141 @@
+.about {
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+.hero {
+  background: url('/assets/ab6.webp') no-repeat center center;
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero h1 {
+  font-size: 3rem;
+  color: #f2f2f2;
+  margin-top: -280px;
+  margin-left: 330px;
+}
+
+.services {
+  display: flex;
+  justify-content: space-between;
+  padding: 3rem 6rem;
+  gap: 2rem;
+  background-color: #f9f9f9;
+  flex-wrap: wrap;
+}
+.service {
+  flex: 1;
+  text-align: center;
+  min-width: 180px;
+}
+.icon {
+  font-size: 2rem;
+  border: 1px solid #999;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 0.5rem;
+}
+
+.videoSection {
+  position: relative;
+  margin: 3rem 0;
+}
+.videoBg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.playButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  background: white;
+  border-radius: 50%;
+  padding: 0.8rem 1.1rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.skills {
+  display: flex;
+  padding: 3rem 6rem;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+.text {
+  flex: 1;
+}
+.text h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+.text p {
+  color: #666;
+}
+.bars {
+  flex: 1;
+}
+.bar {
+  margin-bottom: 1.5rem;
+}
+.barLabel {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+.barTrack {
+  height: 6px;
+  background: #ccc;
+  border-radius: 4px;
+}
+.barFill {
+  height: 100%;
+  background: #333;
+  border-radius: 4px;
+}
+
+.blog {
+  padding: 3rem 6rem;
+}
+.blog h3 {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+.blogList {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.blogCard {
+  max-width: 250px;
+  text-align: center;
+}
+.blogCard img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.blogCard .date {
+  font-size: 0.8rem;
+  margin: 0.5rem 0;
+  color: #666;
+}
+.blogCard h4 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+.blogCard a {
+  font-size: 0.85rem;
+  color: #007bff;
+  text-decoration: underline;
+}
