@@ -116,7 +116,7 @@
   flex-wrap: wrap;
 }
 .blogCard {
-  max-width: 250px;
+  max-width: 320px;
   text-align: center;
 }
 .blogCard img {
