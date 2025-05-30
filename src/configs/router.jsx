@@ -7,6 +7,7 @@ import CustomerLayout from "../layouts/customer";
 import Shop from "../pages/customer/shop";
 import ProductDetail from "../pages/customer/product-detail";
 import BlogDetail from "../pages/customer/BlogDetail";
+import Profile from "../pages/customer/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
       {
         path: "/blog",
         element: <BlogDetail />,
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
       },
     ],
   },

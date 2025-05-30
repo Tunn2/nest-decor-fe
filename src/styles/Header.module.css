@@ -31,7 +31,8 @@
 .icons {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
+  flex-wrap: nowrap;
 }
 
 .iconBtn {
@@ -39,6 +40,9 @@
   border: none;
   font-size: 1.1rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .loginBtn {
@@ -48,8 +52,32 @@
   cursor: pointer;
   font-size: 0.9rem;
   border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .loginBtn:hover {
   background-color: #f0f0f0;
+}
+
+.userSection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.userIcon {
+  font-size: 1.3rem;
+  color: #333;
+  cursor: pointer;
+}
+
+.logoutBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #333;
 }
