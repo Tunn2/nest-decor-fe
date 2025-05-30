@@ -1,9 +1,24 @@
+// 📁 src/components/Header.jsx
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logout, selectUser } from "../redux/features/authSlice";
 import styles from "../styles/Header.module.css";
+import { FaUserCircle, FaSignOutAlt, FaShoppingCart, FaSearch } from "react-icons/fa";
 
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
+
+  const goToProfile = () => {
+    navigate("/profile");
+  };
 
   return (
     <header className={styles.header}>
@@ -18,17 +33,31 @@ const Header = () => {
 
       <div className={styles.icons}>
         <button className={styles.iconBtn}>
-          <span role="img" aria-label="search">🔍</span>
+          <FaSearch />
         </button>
         <button className={styles.iconBtn}>
-          <span role="img" aria-label="cart">🛍️</span>
+          <FaShoppingCart />
         </button>
-        <button className={styles.loginBtn} onClick={() => navigate('/login')}>
-          Login
-        </button>
-        <button className={styles.loginBtn} onClick={() => navigate('/register')}>
-          Register
-        </button>
+
+        {!user ? (
+          <>
+            <button className={styles.loginBtn} onClick={() => navigate('/login')}>
+              Login
+            </button>
+            <button className={styles.loginBtn} onClick={() => navigate('/register')}>
+              Register
+            </button>
+          </>
+        ) : (
+          <div className={styles.userSection}>
+            <button className={styles.iconBtn} onClick={goToProfile} title="Profile">
+              <FaUserCircle className={styles.userIcon} />
+            </button>
+            <button className={styles.logoutBtn} onClick={handleLogout} title="Logout">
+              <FaSignOutAlt />
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );
