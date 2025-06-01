@@ -8,6 +8,11 @@ import Shop from "../pages/customer/shop";
 import ProductDetail from "../pages/customer/product-detail";
 import BlogDetail from "../pages/customer/BlogDetail";
 import Profile from "../pages/customer/Profile";
+import AdminLayout from "../layouts/admin";
+import CustomerManagement from "../pages/admin/customer";
+import FurnitureManagement from "../pages/admin/furniture";
+import CategoryManagement from "../pages/admin/category";
+import OrderManagement from "../pages/admin/order";
 
 export const router = createBrowserRouter([
   {
@@ -40,13 +45,34 @@ export const router = createBrowserRouter([
       },
     ],
   },
-
   {
-    path: "/login",
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      {
+        path: "customer",
+        element: <CustomerManagement />,
+      },
+      {
+        path: "furniture",
+        element: <FurnitureManagement />,
+      },
+      {
+        path: "category",
+        element: <CategoryManagement />,
+      },
+      {
+        path: "order",
+        element: <OrderManagement />,
+      },
+    ],
+  },
+  {
+    path: "login",
     element: <Login />,
   },
   {
-    path: "/register",
+    path: "register",
     element: <Register />,
   },
 ]);
