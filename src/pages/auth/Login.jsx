@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser, selectLoading, selectError } from "../../redux/features/authSlice";
 import { useNavigate } from "react-router-dom";
 import styles from "../../styles/Login.module.css";
 import Header from "../../components/Header";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaCheckCircle } from "react-icons/fa";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -12,12 +12,9 @@ const Login = () => {
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,17 +25,30 @@ const Login = () => {
     e.preventDefault();
     const resultAction = await dispatch(loginUser(formData));
     if (loginUser.fulfilled.match(resultAction)) {
-      navigate("/");
+      setSuccessMessage("Login successful!");
+      setTimeout(() => {
+        setSuccessMessage("");
+        navigate("/");
+      }, 1500);
     }
   };
 
   return (
     <>
+      {successMessage && (
+        <div className={styles.topSuccess}>
+          <FaCheckCircle className={styles.successIcon} />
+          <span>{successMessage}</span>
+        </div>
+      )}
+
       <Header />
+
       <div className={styles.loginWrapper}>
         <div className={styles.loginBox}>
           <h2>Login</h2>
           {error && <p className={styles.error}>{error}</p>}
+
           <form onSubmit={handleSubmit}>
             <input
               type="email"
