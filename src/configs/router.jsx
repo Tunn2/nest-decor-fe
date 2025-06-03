@@ -13,6 +13,11 @@ import CustomerManagement from "../pages/admin/customer";
 import FurnitureManagement from "../pages/admin/furniture";
 import CategoryManagement from "../pages/admin/category";
 import OrderManagement from "../pages/admin/order";
+import Overview from "../pages/customer/profile/Overview";
+import Settings from "../pages/customer/profile/Settings";
+import Security from "../pages/customer/profile/Security";
+import Orders from "../pages/customer/profile/Orders";
+
 
 export const router = createBrowserRouter([
   {
@@ -42,7 +47,14 @@ export const router = createBrowserRouter([
       {
         path: "/profile",
         element: <Profile />,
-      },
+        children: [
+          { path: "", element: <Overview /> },        
+          { path: "settings", element: <Settings /> }, 
+          { path: "security", element: <Security /> }, 
+          { path: "orders", element: <Orders /> },    
+        ],
+      }
+      ,
     ],
   },
   {

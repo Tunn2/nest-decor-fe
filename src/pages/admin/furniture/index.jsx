@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import {
   Table,
@@ -49,7 +47,7 @@ export default function FurnitureManagement() {
       size: "2m x 0.8m x 0.7m",
       color: "Xám",
       material: "Vải",
-      image: "https://cdn.noithatplus.com/wp-content/uploads/2021/12/ghe-sofa-phong-khach.jpg",
+      image: "https://i5.walmartimages.com/seo/Living-Room-Furniture-Sets-2-Pieces-Sofa-Mid-Century-Button-Tufted-Couch-Set-2-Velvet-Chesterfield-Roll-Arm-5-Pillows-Futon-Loveseat-Home-Office_ecd07456-bb43-4125-ba17-1be82ba6b58e.c2bc58c6fc07802b1d201c7d3096d532.jpeg",
       price: 3500000,
     },
     {
@@ -59,7 +57,7 @@ export default function FurnitureManagement() {
       size: "1m x 0.5m x 0.4m",
       color: "Nâu",
       material: "Gỗ",
-      image: "https://noithatbinhminh.com.vn/wp-content/uploads/2020/09/ban-tra-go-tu-nhien.jpg",
+      image: "https://noithathadong.com/wp-content/uploads/2024/11/ban-tra-go-soi-chan-thap-sang-trong-btg03.jpg",
       price: 1200000,
     },
   ]);
