@@ -81,3 +81,20 @@
   font-size: 1.2rem;
   color: #333;
 }
+
+.adminLink {
+  color: #ffc107;
+  font-weight: bold;
+  margin-left: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.adminLink:hover {
+  color: #ffdb58;
+}
+
+.iconInline {
+  font-size: 1rem;
+}

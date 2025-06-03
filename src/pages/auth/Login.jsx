@@ -1,20 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { loginUser, selectLoading, selectError } from "../../redux/features/authSlice";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash, FaCheckCircle } from "react-icons/fa";
 import styles from "../../styles/Login.module.css";
 import Header from "../../components/Header";
-import { FaEye, FaEyeSlash, FaCheckCircle } from "react-icons/fa";
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
-
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,13 +20,36 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const resultAction = await dispatch(loginUser(formData));
-    if (loginUser.fulfilled.match(resultAction)) {
+    setError("");
+    try {
+      const loginRes = await fetch("https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!loginRes.ok) throw new Error("Login failed");
+      const loginData = await loginRes.json();
+      const userId = loginData.userId;
+
+      const userRes = await fetch(`https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/api/Users/${userId}`);
+      if (!userRes.ok) throw new Error("Failed to fetch user info");
+
+      const user = await userRes.json();
+      localStorage.setItem("user", JSON.stringify(user));
+
+      dispatch({ type: "auth/setUser", payload: user });
+
       setSuccessMessage("Login successful!");
       setTimeout(() => {
         setSuccessMessage("");
-        navigate("/");
+        if (user.email === "admin@gmail.com") navigate("/admin/furniture");
+        else navigate("/");
       }, 1500);
+
+    } catch (err) {
+      console.error("Login error:", err);
+      setError(err.message);
     }
   };
 
@@ -67,14 +87,16 @@ const Login = () => {
                 onChange={handleChange}
                 required
               />
-              <span className={styles.eyeIcon} onClick={() => setShowPassword(!showPassword)}>
+              <span
+                className={styles.eyeIcon}
+                onClick={() => setShowPassword(!showPassword)}
+              >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
-            <button type="submit" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
-            </button>
+            <button type="submit">Login</button>
           </form>
+
           <p>
             Don't have an account? <a href="/register">Register here</a>
           </p>
