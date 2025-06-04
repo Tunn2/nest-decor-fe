@@ -49,9 +49,11 @@ const Header = () => {
           <FaSearch />
         </button>
 
-        <button className={styles.iconBtn} title="Cart">
-          <FaShoppingCart />
-        </button>
+        {!isAdmin && (
+          <button className={styles.iconBtn} title="Cart">
+            <FaShoppingCart />
+          </button>
+        )}
 
         {!user ? (
           <>
