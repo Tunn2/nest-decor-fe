@@ -104,25 +104,26 @@ function Shop() {
 
   const filteredProducts = Array.isArray(products)
     ? products
-        .filter((product) => {
-          const categoryMatch =
-            selectedCategories.length === 0 || selectedCategories.includes(product.categoryId);
+      .filter((product) => {
+        const categoryMatch =
+          selectedCategories.length === 0 || selectedCategories.includes(product.categoryId);
 
-          const price = product.basePrice;
-          const priceMatch =
-            selectedPriceRange === "" ||
-            (selectedPriceRange === "under-500000" && price < 500000) ||
-            (selectedPriceRange === "500000-1000000" && price >= 500000 && price <= 1000000) ||
-            (selectedPriceRange === "1000000-2000000" && price > 1000000 && price <= 2000000) ||
-            (selectedPriceRange === "over-2000000" && price > 2000000);
+        const price = product.basePrice;
+        const priceMatch =
+          selectedPriceRange === "" ||
+          (selectedPriceRange === "under-500000" && price < 500000) ||
+          (selectedPriceRange === "500000-1000000" && price >= 500000 && price <= 1000000) ||
+          (selectedPriceRange === "1000000-2000000" && price > 1000000 && price <= 2000000) ||
+          (selectedPriceRange === "over-2000000" && price > 2000000);
 
-          return categoryMatch && priceMatch;
-        })
-        .sort((a, b) => {
-          if (sortOption === "price-low-high") return a.basePrice - b.basePrice;
-          if (sortOption === "price-high-low") return b.basePrice - a.basePrice;
-          return 0;
-        })
+        return categoryMatch && priceMatch;
+      })
+      .sort((a, b) => {
+        if (sortOption === "price-low-high") return a.basePrice - b.basePrice;
+        if (sortOption === "price-high-low") return b.basePrice - a.basePrice;
+        if (sortOption === "all") return 0;
+        return 0;
+      })
     : [];
 
   return (
@@ -180,10 +181,16 @@ function Shop() {
 
               <select
                 value={sortOption}
-                onChange={(e) => setSortOption(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSortOption(value);
+                  if (value === "all") {
+                    setSelectedPriceRange("");
+                  }
+                }}
                 className="sort-select"
               >
-                <option value="featured">Mặc định</option>
+                <option value="all">Tất cả</option>
                 <option value="price-low-high">Giá từ thấp đến cao</option>
                 <option value="price-high-low">Giá từ cao đến thấp</option>
               </select>
