@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   Tag,
@@ -17,6 +17,7 @@ import {
   Badge,
   Statistic,
   Divider,
+  Modal,
 } from "antd";
 import {
   EyeOutlined,
@@ -32,145 +33,112 @@ import {
   UserOutlined,
   CalendarOutlined,
 } from "@ant-design/icons";
+import styles from "./OrderManagement.module.css";
 
 const { Title, Text } = Typography;
 const { Header, Content } = Layout;
 const { Option } = Select;
 
-const rawData = [
-  {
-    key: "1",
-    id: "DH001",
-    customer: "Nguyễn Văn A",
-    date: "2024-06-01",
-    status: "Chờ xác nhận",
-    total: 1500000,
-    items: 3,
-  },
-  {
-    key: "2",
-    id: "DH002",
-    customer: "Trần Thị B",
-    date: "2024-06-02",
-    status: "Đã giao",
-    total: 2300000,
-    items: 5,
-  },
-  {
-    key: "3",
-    id: "DH003",
-    customer: "Lê Văn C",
-    date: "2024-06-03",
-    status: "Đã hủy",
-    total: 500000,
-    items: 1,
-  },
-  {
-    key: "4",
-    id: "DH004",
-    customer: "Phạm Thị D",
-    date: "2024-06-04",
-    status: "Chờ xác nhận",
-    total: 3200000,
-    items: 7,
-  },
-  {
-    key: "5",
-    id: "DH005",
-    customer: "Hoàng Văn E",
-    date: "2024-06-05",
-    status: "Đã giao",
-    total: 1800000,
-    items: 4,
-  },
-];
+const API_URL = "https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/api/Orders";
 
 const statusMap = {
-  "Chờ xác nhận": {
-    color: "orange",
-    icon: <ClockCircleOutlined />,
-  },
-  "Đã giao": {
-    color: "green",
-    icon: <CheckCircleOutlined />,
-  },
-  "Đã hủy": {
-    color: "red",
-    icon: <CloseCircleOutlined />,
-  },
+  "Chờ xác nhận": { color: "orange", icon: <ClockCircleOutlined /> },
+  "Đã giao": { color: "green", icon: <CheckCircleOutlined /> },
+  "Đã hủy": { color: "red", icon: <CloseCircleOutlined /> },
 };
 
 export default function OrderManagement() {
+  const [orders, setOrders] = useState([]);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const fetchOrders = async () => {
+    try {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      setOrders(data.items || []);
+    } catch (err) {
+      message.error("Không thể tải đơn hàng!");
+    }
+  };
+
+  const fetchOrderDetail = async (id) => {
+    try {
+      const res = await fetch(`${API_URL}/${id}`);
+      const data = await res.json();
+      setSelectedOrder(data);
+      setModalVisible(true);
+    } catch (err) {
+      message.error("Không thể tải chi tiết đơn hàng!");
+    }
+  };
+
+  const updateOrderStatus = async (id, newStatus) => {
+    try {
+      const res = await fetch(`${API_URL}/${id}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (res.ok) {
+        message.success("Cập nhật trạng thái thành công");
+        fetchOrders();
+      } else {
+        throw new Error();
+      }
+    } catch {
+      message.error("Lỗi khi cập nhật trạng thái!");
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
   const handleDelete = (id) => {
     message.success(`Đã xóa đơn hàng ${id}`);
   };
 
-  // Lọc dữ liệu theo search và status
-  const data = rawData.filter(
+  const filtered = orders.filter(
     (item) =>
       (!search ||
-        item.customer.toLowerCase().includes(search.toLowerCase()) ||
-        item.id.toLowerCase().includes(search.toLowerCase())) &&
+        item.customer?.toLowerCase().includes(search.toLowerCase()) ||
+        item.id?.toLowerCase().includes(search.toLowerCase())) &&
       (!status || item.status === status)
   );
 
-  // Tính toán thống kê
   const stats = {
-    total: rawData.length,
-    pending: rawData.filter((item) => item.status === "Chờ xác nhận").length,
-    completed: rawData.filter((item) => item.status === "Đã giao").length,
-    cancelled: rawData.filter((item) => item.status === "Đã hủy").length,
-    revenue: rawData
+    total: orders.length,
+    pending: orders.filter((item) => item.status === "Chờ xác nhận").length,
+    completed: orders.filter((item) => item.status === "Đã giao").length,
+    cancelled: orders.filter((item) => item.status === "Đã hủy").length,
+    revenue: orders
       .filter((item) => item.status === "Đã giao")
       .reduce((sum, item) => sum + item.total, 0),
   };
 
   const columns = [
     {
-      title: (
-        <span>
-          <FileTextOutlined style={{ color: "#1677ff", marginRight: 8 }} />
-          Mã đơn hàng
-        </span>
-      ),
+      title: <span><FileTextOutlined className={styles.icon} />Mã đơn hàng</span>,
       dataIndex: "id",
       key: "id",
-      render: (id) => (
-        <Text strong style={{ color: "#1677ff", fontSize: "14px" }}>
-          {id}
-        </Text>
-      ),
+      render: (id) => <Text strong className={styles.code}>{id}</Text>,
       width: 120,
     },
     {
-      title: (
-        <span>
-          <UserOutlined style={{ color: "#595959", marginRight: 8 }} />
-          Khách hàng
-        </span>
-      ),
+      title: <span><UserOutlined className={styles.icon} />Khách hàng</span>,
       dataIndex: "customer",
       key: "customer",
-      render: (customer) => (
-        <Text strong style={{ color: "#262626" }}>
-          {customer}
-        </Text>
-      ),
+      render: (text) => <Text strong>{text}</Text>,
       width: 150,
     },
     {
-      title: (
-        <span>
-          <CalendarOutlined style={{ color: "#595959", marginRight: 8 }} />
-          Ngày tạo
-        </span>
-      ),
+      title: <span><CalendarOutlined className={styles.icon} />Ngày tạo</span>,
       dataIndex: "date",
       key: "date",
-      render: (date) => <Text style={{ color: "#8c8c8c" }}>{date}</Text>,
+      render: (text) => <Text type="secondary">{text}</Text>,
       width: 120,
     },
     {
@@ -178,98 +146,34 @@ export default function OrderManagement() {
       dataIndex: "status",
       key: "status",
       render: (status) => {
-        const s = statusMap[status] || { color: "default", icon: null };
-        return (
-          <Tag
-            color={s.color}
-            icon={s.icon}
-            style={{
-              fontWeight: 500,
-              fontSize: "13px",
-              padding: "6px 12px",
-              borderRadius: "6px",
-            }}
-          >
-            {status}
-          </Tag>
-        );
+        const s = statusMap[status] || {};
+        return <Tag icon={s.icon} color={s.color} className={styles.status}>{status}</Tag>;
       },
-      filters: [
-        { text: "Chờ xác nhận", value: "Chờ xác nhận" },
-        { text: "Đã giao", value: "Đã giao" },
-        { text: "Đã hủy", value: "Đã hủy" },
-      ],
-      onFilter: (value, record) => record.status === value,
       width: 140,
     },
     {
-      title: (
-        <span>
-          <ShoppingCartOutlined style={{ color: "#595959", marginRight: 8 }} />
-          SL
-        </span>
-      ),
+      title: <span><ShoppingCartOutlined className={styles.icon} />SL</span>,
       dataIndex: "items",
       key: "items",
-      render: (items) => (
-        <Badge
-          count={items}
-          style={{
-            backgroundColor: "#f5f5f5",
-            color: "#595959",
-            border: "1px solid #d9d9d9",
-          }}
-        />
-      ),
+      render: (items) => <Badge count={items} className={styles.badge} />,
       width: 80,
       align: "center",
     },
     {
-      title: (
-        <span>
-          <DollarOutlined style={{ color: "#595959", marginRight: 8 }} />
-          Tổng tiền
-        </span>
-      ),
+      title: <span><DollarOutlined className={styles.icon} />Tổng tiền</span>,
       dataIndex: "total",
       key: "total",
-      render: (total) => (
-        <Text strong style={{ color: "#52c41a", fontSize: "14px" }}>
-          {total.toLocaleString("vi-VN")}₫
-        </Text>
-      ),
-      sorter: (a, b) => a.total - b.total,
+      render: (value) => <Text strong style={{ color: "#52c41a" }}>{value.toLocaleString("vi-VN")}₫</Text>,
       width: 130,
     },
     {
       title: "Thao tác",
       key: "action",
       render: (_, record) => (
-        <Space size="small">
-          <Button
-            type="primary"
-            icon={<EyeOutlined />}
-            size="small"
-            style={{ borderRadius: "4px" }}
-          >
-            Xem
-          </Button>
-          <Popconfirm
-            title="Xác nhận xóa"
-            description="Bạn có chắc muốn xóa đơn hàng này?"
-            onConfirm={() => handleDelete(record.id)}
-            okText="Xóa"
-            cancelText="Hủy"
-            okButtonProps={{ danger: true }}
-          >
-            <Button
-              danger
-              icon={<DeleteOutlined />}
-              size="small"
-              style={{ borderRadius: "4px" }}
-            >
-              Xóa
-            </Button>
+        <Space>
+          <Button type="primary" size="small" icon={<EyeOutlined />} onClick={() => fetchOrderDetail(record.id)}>Xem</Button>
+          <Popconfirm title="Xác nhận xóa đơn hàng này?" onConfirm={() => handleDelete(record.id)}>
+            <Button danger size="small" icon={<DeleteOutlined />}>Xóa</Button>
           </Popconfirm>
         </Space>
       ),
@@ -278,184 +182,50 @@ export default function OrderManagement() {
   ];
 
   return (
-    <Layout style={{ minHeight: "100vh", background: "#f0f2f5" }}>
-      <Header
-        style={{
-          background: "#fff",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-          padding: "0 32px",
-          borderBottom: "1px solid #f0f0f0",
-        }}
-      >
-        <Title
-          level={2}
-          style={{
-            margin: 0,
-            color: "#1677ff",
-            lineHeight: "64px",
-            display: "inline-block",
-            fontWeight: 600,
-          }}
-        >
-          <FileTextOutlined style={{ marginRight: 12 }} />
-          Quản lý đơn hàng
-        </Title>
+    <Layout className={styles.layout}>
+      <Header className={styles.header}>
+        <Title level={2} className={styles.title}><FileTextOutlined /> Quản lý đơn hàng</Title>
       </Header>
-
-      <Content style={{ padding: "24px" }}>
-        <Breadcrumb style={{ marginBottom: 24 }}>
+      <Content className={styles.content}>
+        <Breadcrumb className={styles.breadcrumb}>
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Đơn hàng</Breadcrumb.Item>
         </Breadcrumb>
 
-        {/* Statistics Cards */}
-        <Row gutter={16} style={{ marginBottom: 24 }}>
-          <Col xs={12} sm={6}>
-            <Card style={{ textAlign: "center", borderRadius: "8px" }}>
-              <Statistic
-                title="Tổng đơn hàng"
-                value={stats.total}
-                valueStyle={{ color: "#1677ff", fontWeight: 600 }}
-              />
-            </Card>
-          </Col>
-          <Col xs={12} sm={6}>
-            <Card style={{ textAlign: "center", borderRadius: "8px" }}>
-              <Statistic
-                title="Chờ xác nhận"
-                value={stats.pending}
-                valueStyle={{ color: "#fa8c16", fontWeight: 600 }}
-              />
-            </Card>
-          </Col>
-          <Col xs={12} sm={6}>
-            <Card style={{ textAlign: "center", borderRadius: "8px" }}>
-              <Statistic
-                title="Đã giao"
-                value={stats.completed}
-                valueStyle={{ color: "#52c41a", fontWeight: 600 }}
-              />
-            </Card>
-          </Col>
-          <Col xs={12} sm={6}>
-            <Card style={{ textAlign: "center", borderRadius: "8px" }}>
-              <Statistic
-                title="Doanh thu"
-                value={stats.revenue}
-                formatter={(value) => `${value.toLocaleString("vi-VN")}₫`}
-                valueStyle={{
-                  color: "#52c41a",
-                  fontWeight: 600,
-                  fontSize: "16px",
-                }}
-              />
-            </Card>
-          </Col>
+        <Row gutter={16} className={styles.statsRow}>
+          <Col span={6}><Card><Statistic title="Tổng đơn hàng" value={stats.total} /></Card></Col>
+          <Col span={6}><Card><Statistic title="Chờ xác nhận" value={stats.pending} valueStyle={{ color: "#fa8c16" }} /></Card></Col>
+          <Col span={6}><Card><Statistic title="Đã giao" value={stats.completed} valueStyle={{ color: "#52c41a" }} /></Card></Col>
+          <Col span={6}><Card><Statistic title="Doanh thu" value={stats.revenue} formatter={value => `${value.toLocaleString("vi-VN")}₫`} /></Card></Col>
         </Row>
 
-        <Card
-          style={{
-            borderRadius: "8px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-          }}
-          bodyStyle={{ padding: "24px" }}
-        >
-          {/* Toolbar */}
-          <Row gutter={16} align="middle" style={{ marginBottom: 24 }}>
-            <Col xs={24} sm={12} md={8}>
-              <Input
-                allowClear
-                prefix={<SearchOutlined style={{ color: "#bfbfbf" }} />}
-                placeholder="Tìm kiếm theo tên khách hoặc mã đơn..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                size="middle"
-                style={{ borderRadius: "6px" }}
-              />
-            </Col>
-            <Col xs={12} sm={6} md={4}>
-              <Select
-                allowClear
-                placeholder="Lọc trạng thái"
-                value={status || undefined}
-                onChange={setStatus}
-                size="middle"
-                style={{ width: "100%" }}
-              >
-                <Option value="Chờ xác nhận">Chờ xác nhận</Option>
-                <Option value="Đã giao">Đã giao</Option>
-                <Option value="Đã hủy">Đã hủy</Option>
-              </Select>
-            </Col>
-            <Col
-              xs={12}
-              sm={6}
-              md={4}
-              // offset={md ? 8 : 0}
-              style={{ textAlign: "right" }}
-            >
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                size="middle"
-                style={{ borderRadius: "6px", fontWeight: 500 }}
-              >
-                Tạo đơn mới
-              </Button>
-            </Col>
+        <Card className={styles.tableCard}>
+          <Row gutter={16} className={styles.toolbar}>
+            <Col span={8}><Input placeholder="Tìm theo mã/khách hàng..." prefix={<SearchOutlined />} allowClear value={search} onChange={(e) => setSearch(e.target.value)} /></Col>
+            <Col span={6}><Select placeholder="Lọc trạng thái" allowClear value={status || undefined} onChange={setStatus} style={{ width: "100%" }}><Option value="Chờ xác nhận">Chờ xác nhận</Option><Option value="Đã giao">Đã giao</Option><Option value="Đã hủy">Đã hủy</Option></Select></Col>
+            <Col span={4} offset={6} style={{ textAlign: "right" }}><Button type="primary" icon={<PlusOutlined />}>Tạo đơn mới</Button></Col>
           </Row>
-
-          <Divider style={{ margin: "16px 0" }} />
-
-          <Table
-            columns={columns}
-            dataSource={data}
-            pagination={{
-              pageSize: 10,
-              showSizeChanger: true,
-              showQuickJumper: true,
-              showTotal: (total, range) =>
-                `${range[0]}-${range[1]} của ${total} đơn hàng`,
-              size: "default",
-            }}
-            bordered
-            size="middle"
-            scroll={{ x: 800 }}
-            style={{ borderRadius: "6px" }}
-          />
+          <Divider />
+          <Table columns={columns} dataSource={filtered} pagination={{ pageSize: 10 }} rowKey="id" />
         </Card>
 
-        <style>{`
-          .ant-table-thead > tr > th {
-            background: #fafafa !important;
-            font-weight: 600 !important;
-            color: #262626 !important;
-            border-bottom: 2px solid #f0f0f0 !important;
-          }
-          
-          .ant-table-tbody > tr:hover td {
-            background: #f5f8ff !important;
-          }
-          
-          .ant-card {
-            border: 1px solid #f0f0f0;
-          }
-          
-          .ant-statistic-title {
-            color: #8c8c8c !important;
-            font-weight: 500 !important;
-          }
-          
-          .ant-btn-primary {
-            background: #1677ff;
-            border-color: #1677ff;
-          }
-          
-          .ant-btn-primary:hover {
-            background: #4096ff;
-            border-color: #4096ff;
-          }
-        `}</style>
+        <Modal
+          title={`Chi tiết đơn hàng ${selectedOrder?.id || ""}`}
+          open={modalVisible}
+          onCancel={() => setModalVisible(false)}
+          footer={null}
+        >
+          {selectedOrder ? (
+            <div>
+              <p><strong>Khách hàng:</strong> {selectedOrder.customer}</p>
+              <p><strong>Ngày tạo:</strong> {selectedOrder.date}</p>
+              <p><strong>Trạng thái:</strong> {selectedOrder.status}</p>
+              <p><strong>Tổng tiền:</strong> {selectedOrder.total?.toLocaleString("vi-VN")}₫</p>
+              <Button onClick={() => updateOrderStatus(selectedOrder.id, "Đã giao")} type="primary" style={{ marginRight: 8 }}>Đánh dấu đã giao</Button>
+              <Button onClick={() => updateOrderStatus(selectedOrder.id, "Đã hủy")} danger>Hủy đơn</Button>
+            </div>
+          ) : null}
+        </Modal>
       </Content>
     </Layout>
   );
