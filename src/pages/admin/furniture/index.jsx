@@ -1,70 +1,69 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   Button,
   Modal,
   Form,
   Input,
-  Select,
   Space,
   Popconfirm,
   Card,
-  Row,
-  Col,
-  Tag,
   Typography,
   Divider,
+  message,
+  Row,
+  Col,
+  Select,
 } from "antd";
 import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
   HomeOutlined,
-  TableOutlined,
-  BgColorsOutlined,
-  ColumnWidthOutlined,
-  AppstoreOutlined,
 } from "@ant-design/icons";
+import styles from "./FurnitureManagement.module.css";
 
-const { Option } = Select;
 const { Title, Text } = Typography;
-const { Meta } = Card;
+const { Option } = Select;
 
-const typeColors = {
-  Ghế: "#1890ff",
-  Bàn: "#52c41a",
-  Tủ: "#722ed1",
-  Giường: "#fa8c16",
-  Khác: "#d9d9d9",
-};
+const API_URL = "https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/api/Furniture";
+const CATEGORY_API = "https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/api/Categories";
 
 export default function FurnitureManagement() {
-  const [data, setData] = useState([
-    {
-      key: 1,
-      name: "Ghế Sofa",
-      type: "Ghế",
-      size: "2m x 0.8m x 0.7m",
-      color: "Xám",
-      material: "Vải",
-      image: "https://i5.walmartimages.com/seo/Living-Room-Furniture-Sets-2-Pieces-Sofa-Mid-Century-Button-Tufted-Couch-Set-2-Velvet-Chesterfield-Roll-Arm-5-Pillows-Futon-Loveseat-Home-Office_ecd07456-bb43-4125-ba17-1be82ba6b58e.c2bc58c6fc07802b1d201c7d3096d532.jpeg",
-      price: 3500000,
-    },
-    {
-      key: 2,
-      name: "Bàn Trà",
-      type: "Bàn",
-      size: "1m x 0.5m x 0.4m",
-      color: "Nâu",
-      material: "Gỗ",
-      image: "https://noithathadong.com/wp-content/uploads/2024/11/ban-tra-go-soi-chan-thap-sang-trong-btg03.jpg",
-      price: 1200000,
-    },
-  ]);
-
+  const [data, setData] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [form] = Form.useForm();
+
+  const fetchFurniture = async () => {
+    try {
+      const res = await fetch(API_URL);
+      const result = await res.json();
+      if (Array.isArray(result.items)) {
+        setData(result.items);
+      } else {
+        setData([]);
+      }
+    } catch (err) {
+      message.error("Không thể tải danh sách nội thất!");
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch(CATEGORY_API);
+      const result = await res.json();
+      setCategories(result);
+    } catch (err) {
+      message.error("Không thể tải danh mục!");
+    }
+  };
+
+  useEffect(() => {
+    fetchFurniture();
+    fetchCategories();
+  }, []);
 
   const showAddModal = () => {
     setEditingItem(null);
@@ -74,96 +73,105 @@ export default function FurnitureManagement() {
 
   const showEditModal = (record) => {
     setEditingItem(record);
-    form.setFieldsValue(record);
+    form.setFieldsValue({
+      ...record,
+      height: record.sizeConfig?.defaultHeight,
+      width: record.sizeConfig?.defaultWidth,
+      length: record.sizeConfig?.defaultLength,
+    });
     setIsModalVisible(true);
   };
 
-  const handleDelete = (key) => {
-    setData(data.filter((item) => item.key !== key));
-  };
-
-  const handleOk = () => {
-    form.validateFields().then((values) => {
-      if (editingItem) {
-        setData(
-          data.map((item) =>
-            item.key === editingItem.key ? { ...item, ...values } : item
-          )
-        );
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        message.success("Đã xóa thành công!");
+        fetchFurniture();
       } else {
-        setData([...data, { key: Date.now(), ...values }]);
+        throw new Error();
       }
-      setIsModalVisible(false);
-      form.resetFields();
-    });
+    } catch {
+      message.error("Lỗi khi xóa nội thất!");
+    }
   };
 
-  const getStatsData = () => {
-    const total = data.length;
-    const chairs = data.filter((item) => item.type === "Ghế").length;
-    const tables = data.filter((item) => item.type === "Bàn").length;
-    const others = data.filter(
-      (item) => !["Ghế", "Bàn"].includes(item.type)
-    ).length;
+  const handleOk = async () => {
+    try {
+      const values = await form.validateFields();
+      const payload = {
+        ...values,
+        sizeConfig: {
+          supportsCustomSize: true,
+          defaultHeight: parseInt(values.height),
+          defaultWidth: parseInt(values.width),
+          defaultLength: parseInt(values.length),
+          maxHeight: 200,
+          maxWidth: 200,
+          maxLength: 200,
+        },
+        categoryId: parseInt(values.categoryId),
+      };
 
-    return { total, chairs, tables, others };
+      const url = editingItem ? `${API_URL}/${editingItem.id}` : API_URL;
+      const method = editingItem ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        message.success(editingItem ? "Đã cập nhật thành công!" : "Đã thêm mới thành công!");
+        setIsModalVisible(false);
+        form.resetFields();
+        fetchFurniture();
+      } else {
+        throw new Error();
+      }
+    } catch {
+      message.error("Lỗi khi lưu dữ liệu!");
+    }
   };
-
-  const stats = getStatsData();
 
   const columns = [
     {
       title: "ID",
-      dataIndex: "key",
-      key: "key",
-      width: 80,
-      render: (text) => <Text strong>{text}</Text>,
+      dataIndex: "id",
+      key: "id",
     },
     {
       title: "Tên",
       dataIndex: "name",
       key: "name",
-      render: (text, record) => (
-        <Space>
-          <HomeOutlined style={{ color: "#1890ff" }} />
-          <Text strong>{text}</Text>
-        </Space>
-      ),
     },
     {
-      title: "Loại",
-      dataIndex: "type",
-      key: "type",
-      render: (type) => (
-        <Tag
-          color={typeColors[type]}
-          style={{ fontWeight: "bold", borderRadius: "6px" }}
-        >
-          {type}
-        </Tag>
-      ),
+      title: "Mô tả",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Danh mục",
+      dataIndex: "categoryId",
+      key: "categoryId",
+      render: (id) => {
+        const cat = categories.find((c) => c.id === id);
+        return cat ? cat.name : id;
+      },
     },
     {
       title: "Kích thước",
-      dataIndex: "size",
       key: "size",
-      render: (text) => (
-        <Space>
-          <ColumnWidthOutlined style={{ color: "#52c41a" }} />
-          <Text>{text}</Text>
-        </Space>
-      ),
+      render: (_, record) => {
+        const size = record.sizeConfig;
+        return size ? `${size.defaultLength}x${size.defaultWidth}x${size.defaultHeight} cm` : "-";
+      },
     },
     {
       title: "Màu sắc",
       dataIndex: "color",
       key: "color",
-      render: (text) => (
-        <Space>
-          <BgColorsOutlined style={{ color: "#fa8c16" }} />
-          <Text>{text}</Text>
-        </Space>
-      ),
     },
     {
       title: "Chất liệu",
@@ -172,61 +180,25 @@ export default function FurnitureManagement() {
     },
     {
       title: "Hình ảnh",
-      dataIndex: "image",
-      key: "image",
-      width: 100,
+      dataIndex: "imageUrl",
+      key: "imageUrl",
       render: (url) =>
-        url ? (
-          <img
-            src={url}
-            alt="furniture"
-            style={{
-              width: 60,
-              height: 40,
-              objectFit: "cover",
-              borderRadius: 6,
-            }}
-          />
-        ) : (
-          <span style={{ color: "#aaa" }}>Không có</span>
-        ),
+        url ? <img src={url} alt="furniture" style={{ width: 60, height: 40, objectFit: "cover" }} /> : "Không có",
     },
     {
       title: "Giá",
-      dataIndex: "price",
-      key: "price",
-      render: (price) => (
-        <Text strong style={{ color: "#fa541c" }}>
-          {price?.toLocaleString("vi-VN")} ₫
-        </Text>
-      ),
+      dataIndex: "basePrice",
+      key: "basePrice",
+      render: (price) => `${price?.toLocaleString("vi-VN")} ₫`,
     },
     {
       title: "Hành động",
       key: "action",
-      width: 150,
       render: (_, record) => (
         <Space>
-          <Button
-            type="primary"
-            ghost
-            size="small"
-            icon={<EditOutlined />}
-            onClick={() => showEditModal(record)}
-          >
-            Sửa
-          </Button>
-          <Popconfirm
-            title="Xác nhận xóa"
-            description={`Bạn chắc chắn muốn xóa "${record.name}"?`}
-            onConfirm={() => handleDelete(record.key)}
-            okText="Xóa"
-            cancelText="Hủy"
-            okButtonProps={{ danger: true }}
-          >
-            <Button danger size="small" icon={<DeleteOutlined />}>
-              Xóa
-            </Button>
+          <Button type="primary" onClick={() => showEditModal(record)} icon={<EditOutlined />}>Sửa</Button>
+          <Popconfirm title="Xoá?" onConfirm={() => handleDelete(record.id)}>
+            <Button danger icon={<DeleteOutlined />}>Xóa</Button>
           </Popconfirm>
         </Space>
       ),
@@ -234,434 +206,33 @@ export default function FurnitureManagement() {
   ];
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
-        padding: "24px",
-      }}
-    >
-      <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
-        {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "24px",
-            background: "white",
-            padding: "24px",
-            borderRadius: "12px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-          }}
-        >
-          <div>
-            <Title level={2} style={{ margin: 0, color: "#1f2937" }}>
-              <AppstoreOutlined
-                style={{ marginRight: "12px", color: "#1890ff" }}
-              />
-              Quản lý đồ nội thất
-            </Title>
-            <Text type="secondary" style={{ fontSize: "16px" }}>
-              Quản lý và theo dõi các món đồ nội thất trong hệ thống
-            </Text>
-          </div>
-          <Button
-            type="primary"
-            size="large"
-            icon={<PlusOutlined />}
-            onClick={showAddModal}
-            style={{
-              height: "48px",
-              borderRadius: "8px",
-              fontWeight: "bold",
-            }}
-          >
-            Thêm mới
-          </Button>
-        </div>
-
-        {/* Stats Cards */}
-        <Row gutter={[16, 16]} style={{ marginBottom: "24px" }}>
-          <Col xs={24} sm={12} md={6}>
-            <Card
-              style={{
-                borderRadius: "12px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                border: "none",
-              }}
-              bodyStyle={{ padding: "24px" }}
-            >
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <div
-                  style={{
-                    background: "#e6f7ff",
-                    padding: "12px",
-                    borderRadius: "8px",
-                    marginRight: "16px",
-                  }}
-                >
-                  <AppstoreOutlined
-                    style={{ fontSize: "24px", color: "#1890ff" }}
-                  />
-                </div>
-                <div>
-                  <Text type="secondary" style={{ fontSize: "14px" }}>
-                    Tổng số món
-                  </Text>
-                  <div
-                    style={{
-                      fontSize: "28px",
-                      fontWeight: "bold",
-                      color: "#1f2937",
-                    }}
-                  >
-                    {stats.total}
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </Col>
-
-          <Col xs={24} sm={12} md={6}>
-            <Card
-              style={{
-                borderRadius: "12px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                border: "none",
-              }}
-              bodyStyle={{ padding: "24px" }}
-            >
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <div
-                  style={{
-                    background: "#f6ffed",
-                    padding: "12px",
-                    borderRadius: "8px",
-                    marginRight: "16px",
-                  }}
-                >
-                  <HomeOutlined
-                    style={{ fontSize: "24px", color: "#52c41a" }}
-                  />
-                </div>
-                <div>
-                  <Text type="secondary" style={{ fontSize: "14px" }}>
-                    Ghế
-                  </Text>
-                  <div
-                    style={{
-                      fontSize: "28px",
-                      fontWeight: "bold",
-                      color: "#1f2937",
-                    }}
-                  >
-                    {stats.chairs}
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </Col>
-
-          <Col xs={24} sm={12} md={6}>
-            <Card
-              style={{
-                borderRadius: "12px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                border: "none",
-              }}
-              bodyStyle={{ padding: "24px" }}
-            >
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <div
-                  style={{
-                    background: "#f9f0ff",
-                    padding: "12px",
-                    borderRadius: "8px",
-                    marginRight: "16px",
-                  }}
-                >
-                  <TableOutlined
-                    style={{ fontSize: "24px", color: "#722ed1" }}
-                  />
-                </div>
-                <div>
-                  <Text type="secondary" style={{ fontSize: "14px" }}>
-                    Bàn
-                  </Text>
-                  <div
-                    style={{
-                      fontSize: "28px",
-                      fontWeight: "bold",
-                      color: "#1f2937",
-                    }}
-                  >
-                    {stats.tables}
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </Col>
-
-          <Col xs={24} sm={12} md={6}>
-            <Card
-              style={{
-                borderRadius: "12px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                border: "none",
-              }}
-              bodyStyle={{ padding: "24px" }}
-            >
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <div
-                  style={{
-                    background: "#fff7e6",
-                    padding: "12px",
-                    borderRadius: "8px",
-                    marginRight: "16px",
-                  }}
-                >
-                  <AppstoreOutlined
-                    style={{ fontSize: "24px", color: "#fa8c16" }}
-                  />
-                </div>
-                <div>
-                  <Text type="secondary" style={{ fontSize: "14px" }}>
-                    Khác
-                  </Text>
-                  <div
-                    style={{
-                      fontSize: "28px",
-                      fontWeight: "bold",
-                      color: "#1f2937",
-                    }}
-                  >
-                    {stats.others}
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </Col>
-        </Row>
-
-        {/* Table */}
-        <Card
-          title={
-            <div>
-              <Title level={4} style={{ margin: 0 }}>
-                <TableOutlined
-                  style={{ marginRight: "8px", color: "#1890ff" }}
-                />
-                Danh sách đồ nội thất
-              </Title>
-              <Text type="secondary">
-                Quản lý thông tin chi tiết về các món đồ nội thất
-              </Text>
-            </div>
-          }
-          style={{
-            borderRadius: "12px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-            border: "none",
-          }}
-          bodyStyle={{ padding: "24px" }}
-        >
-          <Table
-            columns={columns}
-            dataSource={data}
-            pagination={{
-              pageSize: 10,
-              showSizeChanger: true,
-              showQuickJumper: true,
-              showTotal: (total, range) =>
-                `${range[0]}-${range[1]} của ${total} món đồ`,
-            }}
-            style={{
-              background: "white",
-              borderRadius: "8px",
-            }}
-            rowClassName={() => "hover:bg-gray-50"}
-          />
+    <div className={styles.container}>
+      <div className={styles.wrapper}>
+        <Card className={styles.tableCard}>
+          <Title level={2}>Quản lý nội thất</Title>
+          <Button type="primary" icon={<PlusOutlined />} onClick={showAddModal}>Thêm mới</Button>
+          <Divider />
+          <Table columns={columns} dataSource={data} rowKey="id" pagination={{ pageSize: 10 }} />
         </Card>
 
-        {/* Modal */}
-        <Modal
-          title={
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <AppstoreOutlined
-                style={{ marginRight: "8px", color: "#1890ff" }}
-              />
-              <span>
-                {editingItem ? "Sửa đồ nội thất" : "Thêm đồ nội thất"}
-              </span>
-            </div>
-          }
-          open={isModalVisible}
-          onOk={handleOk}
-          onCancel={() => setIsModalVisible(false)}
-          okText={editingItem ? "Cập nhật" : "Thêm mới"}
-          cancelText="Hủy"
-          width={600}
-          style={{ top: 20 }}
-          okButtonProps={{
-            size: "large",
-            style: { fontWeight: "bold" },
-          }}
-          cancelButtonProps={{
-            size: "large",
-          }}
-        >
-          <Divider style={{ margin: "16px 0" }} />
-          <Text
-            type="secondary"
-            style={{ display: "block", marginBottom: "24px" }}
-          >
-            {editingItem
-              ? "Cập nhật thông tin đồ nội thất"
-              : "Thêm món đồ nội thất mới vào hệ thống"}
-          </Text>
-
-          <Form form={form} layout="vertical" style={{ marginTop: "16px" }}>
-            <Row gutter={16}>
-              <Col span={24}>
-                <Form.Item
-                  name="name"
-                  label={<Text strong>Tên đồ nội thất</Text>}
-                  rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
-                >
-                  <Input
-                    size="large"
-                    placeholder="Nhập tên đồ nội thất"
-                    prefix={<HomeOutlined style={{ color: "#bfbfbf" }} />}
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col span={12}>
-                <Form.Item
-                  name="type"
-                  label={<Text strong>Loại</Text>}
-                  rules={[{ required: true, message: "Vui lòng chọn loại!" }]}
-                >
-                  <Select size="large" placeholder="Chọn loại đồ nội thất">
-                    <Option value="Ghế">
-                      <Space>
-                        <HomeOutlined />
-                        Ghế
-                      </Space>
-                    </Option>
-                    <Option value="Bàn">
-                      <Space>
-                        <TableOutlined />
-                        Bàn
-                      </Space>
-                    </Option>
-                    <Option value="Tủ">
-                      <Space>
-                        <AppstoreOutlined />
-                        Tủ
-                      </Space>
-                    </Option>
-                    <Option value="Giường">
-                      <Space>
-                        <HomeOutlined />
-                        Giường
-                      </Space>
-                    </Option>
-                    <Option value="Khác">
-                      <Space>
-                        <AppstoreOutlined />
-                        Khác
-                      </Space>
-                    </Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-
-              <Col span={12}>
-                <Form.Item
-                  name="size"
-                  label={<Text strong>Kích thước</Text>}
-                  rules={[
-                    { required: true, message: "Vui lòng nhập kích thước!" },
-                  ]}
-                >
-                  <Input
-                    size="large"
-                    placeholder="VD: 2m x 0.8m x 0.7m"
-                    prefix={
-                      <ColumnWidthOutlined style={{ color: "#bfbfbf" }} />
-                    }
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col span={12}>
-                <Form.Item
-                  name="color"
-                  label={<Text strong>Màu sắc</Text>}
-                  rules={[
-                    { required: true, message: "Vui lòng nhập màu sắc!" },
-                  ]}
-                >
-                  <Input
-                    size="large"
-                    placeholder="Nhập màu sắc"
-                    prefix={<BgColorsOutlined style={{ color: "#bfbfbf" }} />}
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col span={12}>
-                <Form.Item
-                  name="material"
-                  label={<Text strong>Chất liệu</Text>}
-                  rules={[
-                    { required: true, message: "Vui lòng nhập chất liệu!" },
-                  ]}
-                >
-                  <Input
-                    size="large"
-                    placeholder="Nhập chất liệu"
-                    prefix={<AppstoreOutlined style={{ color: "#bfbfbf" }} />}
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="image"
-                  label={<Text strong>Hình ảnh (URL)</Text>}
-                  rules={[
-                    { required: true, message: "Vui lòng nhập link hình ảnh!" },
-                    { type: "url", message: "Link không hợp lệ!" },
-                  ]}
-                >
-                  <Input
-                    size="large"
-                    placeholder="Dán link hình ảnh"
-                    prefix={<AppstoreOutlined style={{ color: "#bfbfbf" }} />}
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="price"
-                  label={<Text strong>Giá (VNĐ)</Text>}
-                  rules={[
-                    { required: true, message: "Vui lòng nhập giá!" },
-                    { pattern: /^\d+$/, message: "Chỉ nhập số!" },
-                  ]}
-                >
-                  <Input
-                    size="large"
-                    placeholder="Nhập giá"
-                    prefix={<Text strong>₫</Text>}
-                    type="number"
-                    min={0}
-                  />
-                </Form.Item>
-              </Col>
+        <Modal title={editingItem ? "Sửa nội thất" : "Thêm nội thất"} open={isModalVisible} onOk={handleOk} onCancel={() => setIsModalVisible(false)} okText="Lưu" cancelText="Hủy">
+          <Form form={form} layout="vertical">
+            <Form.Item name="name" label="Tên" rules={[{ required: true }]}><Input /></Form.Item>
+            <Form.Item name="description" label="Mô tả" rules={[{ required: true }]}><Input.TextArea rows={3} /></Form.Item>
+            <Form.Item name="categoryId" label="Danh mục" rules={[{ required: true }]}>
+              <Select placeholder="Chọn danh mục">
+                {categories.map((cat) => <Option key={cat.id} value={cat.id}>{cat.name}</Option>)}
+              </Select>
+            </Form.Item>
+            <Row gutter={8}>
+              <Col span={8}><Form.Item name="length" label="Chiều dài (cm)" rules={[{ required: true }]}><Input type="number" min={1} /></Form.Item></Col>
+              <Col span={8}><Form.Item name="width" label="Chiều rộng (cm)" rules={[{ required: true }]}><Input type="number" min={1} /></Form.Item></Col>
+              <Col span={8}><Form.Item name="height" label="Chiều cao (cm)" rules={[{ required: true }]}><Input type="number" min={1} /></Form.Item></Col>
             </Row>
+            <Form.Item name="color" label="Màu sắc" rules={[{ required: true }]}><Input /></Form.Item>
+            <Form.Item name="material" label="Chất liệu" rules={[{ required: true }]}><Input /></Form.Item>
+            <Form.Item name="imageUrl" label="Link ảnh" rules={[{ required: true, type: 'url' }]}><Input /></Form.Item>
+            <Form.Item name="basePrice" label="Giá (VNĐ)" rules={[{ required: true }]}><Input type="number" min={0} /></Form.Item>
           </Form>
         </Modal>
       </div>

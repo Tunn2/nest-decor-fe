@@ -1,0 +1,104 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 24px;
+}
+
+.wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.headerBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.headerTitle {
+  margin: 0;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+}
+
+.headerIcon {
+  margin-right: 12px;
+  color: #1890ff;
+  font-size: 24px;
+}
+
+.subText {
+  font-size: 16px;
+  display: block;
+}
+
+.addButton {
+  height: 48px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.statsRow {
+  margin-bottom: 24px;
+}
+
+.tableCard {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: none;
+  background: white;
+}
+
+.table {
+  background: white;
+  border-radius: 8px;
+}
+
+.tableRow:hover {
+  background-color: #f5f5f5;
+}
+
+.tableTitle {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+}
+
+.tableIcon {
+  margin-right: 8px;
+  color: #1890ff;
+  font-size: 20px;
+}
+
+.modalTitle {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+}
+
+.modalIcon {
+  margin-right: 8px;
+  color: #1890ff;
+  font-size: 20px;
+}
+
+.modalSubtext {
+  display: block;
+  margin-bottom: 24px;
+}
+
+.okButton {
+  font-weight: bold;
+}
+
+.form {
+  margin-top: 16px;
+}

@@ -1,0 +1,81 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 24px;
+}
+
+.innerWrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.buttonEdit {
+  border-radius: 6px;
+}
+
+.buttonDelete {
+  border-radius: 6px;
+}
+
+.buttonAdd {
+  border-radius: 6px;
+  background: linear-gradient(135deg, #1677ff 0%, #0958d9 100%);
+  border: none;
+  box-shadow: 0 2px 6px rgba(22, 119, 255, 0.4);
+}
+
+.buttonReload {
+  border-radius: 6px;
+}
+
+.statCard {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: none;
+  background: linear-gradient(135deg, #1677ff 0%, #0958d9 100%);
+}
+
+.statCardInner {
+  padding: 24px;
+}
+
+.searchCard {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: none;
+  height: 100%;
+}
+
+.tableCard {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.tableCardInner {
+  padding: 24px;
+}
+
+.modalOkButton {
+  border-radius: 6px;
+  background: linear-gradient(135deg, #1677ff 0%, #0958d9 100%);
+  border: none;
+}
+
+.modalUpdateButton {
+  border-radius: 6px;
+  background: #1677ff;
+  border: none;
+}
+
+.modalCancelButton {
+  border-radius: 6px;
+}
+
+.inputLarge {
+  border-radius: 6px;
+}
+
+.textarea {
+  border-radius: 6px;
+}

@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import {
   Table,
@@ -28,6 +26,7 @@ import {
   SearchOutlined,
   InfoCircleOutlined,
 } from "@ant-design/icons"
+import styles from "./CategoryManagement.module.css"
 
 const { Title, Text, Paragraph } = Typography
 const API_URL = "https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/api/Categories"
@@ -88,7 +87,6 @@ export default function CategoryManagement() {
       const values = await form.validateFields()
       setLoading(true)
       if (editingCategory) {
-        // Update
         await fetch(`${API_URL}/${editingCategory.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -96,7 +94,6 @@ export default function CategoryManagement() {
         })
         message.success("Cập nhật danh mục thành công!")
       } else {
-        // Create
         await fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -163,7 +160,7 @@ export default function CategoryManagement() {
             size="middle"
             ghost
             onClick={() => handleEdit(record)}
-            style={{ borderRadius: "6px" }}
+            className={styles.buttonEdit}
           >
             Sửa
           </Button>
@@ -175,7 +172,7 @@ export default function CategoryManagement() {
             cancelText="Hủy"
             okButtonProps={{ danger: true }}
           >
-            <Button type="primary" danger icon={<DeleteOutlined />} size="middle" style={{ borderRadius: "6px" }}>
+            <Button type="primary" danger icon={<DeleteOutlined />} size="middle" className={styles.buttonDelete}>
               Xóa
             </Button>
           </Popconfirm>
@@ -185,23 +182,9 @@ export default function CategoryManagement() {
   ]
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
-        padding: "24px",
-      }}
-    >
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        {/* Header */}
-        <Card
-          style={{
-            marginBottom: "24px",
-            borderRadius: "12px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-            border: "none",
-          }}
-        >
+    <div className={styles.container}>
+      <div className={styles.innerWrapper}>
+        <Card className={styles.tableCard}>
           <Row align="middle" justify="space-between">
             <Col>
               <Title level={2} style={{ margin: 0, color: "#1677ff", display: "flex", alignItems: "center" }}>
@@ -216,7 +199,7 @@ export default function CategoryManagement() {
                   icon={<ReloadOutlined />}
                   onClick={fetchCategories}
                   loading={loading}
-                  style={{ borderRadius: "6px" }}
+                  className={styles.buttonReload}
                 >
                   Làm mới
                 </Button>
@@ -224,12 +207,7 @@ export default function CategoryManagement() {
                   type="primary"
                   icon={<PlusOutlined />}
                   onClick={handleAdd}
-                  style={{
-                    borderRadius: "6px",
-                    background: "linear-gradient(135deg, #1677ff 0%, #0958d9 100%)",
-                    border: "none",
-                    boxShadow: "0 2px 6px rgba(22, 119, 255, 0.4)",
-                  }}
+                  className={styles.buttonAdd}
                 >
                   Thêm danh mục
                 </Button>
@@ -238,18 +216,9 @@ export default function CategoryManagement() {
           </Row>
         </Card>
 
-        {/* Stats */}
-        <Row gutter={[16, 16]} style={{ marginBottom: "24px" }}>
+        <Row gutter={[16, 16]} style={{ margin: "24px 0" }}>
           <Col xs={24} sm={8}>
-            <Card
-              style={{
-                borderRadius: "12px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                border: "none",
-                background: "linear-gradient(135deg, #1677ff 0%, #0958d9 100%)",
-              }}
-              bodyStyle={{ padding: "24px" }}
-            >
+            <Card className={styles.statCard} bodyStyle={{ padding: "24px" }}>
               <Statistic
                 title={<Text style={{ color: "white", opacity: 0.9 }}>Tổng số danh mục</Text>}
                 value={categories.length}
@@ -259,15 +228,7 @@ export default function CategoryManagement() {
             </Card>
           </Col>
           <Col xs={24} sm={16}>
-            <Card
-              style={{
-                borderRadius: "12px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                border: "none",
-                height: "100%",
-              }}
-              bodyStyle={{ padding: "24px" }}
-            >
+            <Card className={styles.searchCard} bodyStyle={{ padding: "24px" }}>
               <Input
                 placeholder="Tìm kiếm danh mục..."
                 prefix={<SearchOutlined style={{ color: "#1677ff" }} />}
@@ -275,21 +236,13 @@ export default function CategoryManagement() {
                 onChange={handleSearch}
                 allowClear
                 size="large"
-                style={{ borderRadius: "6px" }}
+                className={styles.inputLarge}
               />
             </Card>
           </Col>
         </Row>
 
-        {/* Table */}
-        <Card
-          style={{
-            borderRadius: "12px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-            border: "none",
-          }}
-          bodyStyle={{ padding: "24px" }}
-        >
+        <Card className={styles.tableCard} bodyStyle={{ padding: "24px" }}>
           <Table
             dataSource={filteredCategories}
             columns={columns}
@@ -302,16 +255,12 @@ export default function CategoryManagement() {
               showQuickJumper: true,
               style: { marginTop: "16px" },
             }}
-            bordered={false}
-            style={{ marginTop: "16px" }}
             locale={{
               emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Không có dữ liệu" />,
             }}
-            rowClassName={() => "table-row-hover"}
           />
         </Card>
 
-        {/* Modal */}
         <Modal
           title={
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -333,14 +282,10 @@ export default function CategoryManagement() {
           width={600}
           style={{ top: 20 }}
           okButtonProps={{
-            style: {
-              borderRadius: "6px",
-              background: editingCategory ? "#1677ff" : "linear-gradient(135deg, #1677ff 0%, #0958d9 100%)",
-              border: "none",
-            },
+            className: editingCategory ? styles.modalUpdateButton : styles.modalOkButton,
           }}
           cancelButtonProps={{
-            style: { borderRadius: "6px" },
+            className: styles.modalCancelButton,
           }}
         >
           <Divider />
@@ -355,7 +300,7 @@ export default function CategoryManagement() {
                 placeholder="Nhập tên danh mục"
                 prefix={<AppstoreOutlined style={{ color: "#bfbfbf" }} />}
                 size="large"
-                style={{ borderRadius: "6px" }}
+                className={styles.inputLarge}
               />
             </Form.Item>
             <Form.Item
@@ -369,7 +314,7 @@ export default function CategoryManagement() {
                 rows={4}
                 showCount
                 maxLength={500}
-                style={{ borderRadius: "6px" }}
+                className={styles.textarea}
               />
             </Form.Item>
           </Form>
