@@ -406,3 +406,159 @@
   font-weight: bold;
   font-size: 1rem;
 }
+
+.productCard {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.productCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 1024px) {
+  .stylishChairs,
+  .tableSection,
+  .contemporaryLamps {
+    flex-direction: column;
+    padding: 2rem;
+    gap: 2rem;
+  }
+
+  .chairImage,
+  .tableImage,
+  .lampImage {
+    justify-content: center;
+  }
+
+  .chairImage img,
+  .tableImage img,
+  .lampImage img {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .productGrid {
+    flex-wrap: wrap;
+  }
+
+  .productCard {
+    width: 45%;
+  }
+
+  .services {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .heroContent h1 {
+    font-size: 2rem;
+  }
+
+  .heroContent p {
+    font-size: 1rem;
+  }
+
+  .heroContent button {
+    padding: 8px 16px;
+  }
+
+  .bannerSection {
+    padding: 2rem;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .bannerContent {
+    max-width: 100%;
+  }
+
+  .deliveryBanner {
+    flex-direction: column;
+    height: auto;
+    padding: 2rem;
+  }
+
+  .deliveryBanner p {
+    position: static;
+    transform: none;
+    margin-bottom: 1rem;
+  }
+
+  .productGrid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .productCard {
+    width: 80%;
+  }
+
+  .services {
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .blog {
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .arrows {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroContent h1 {
+    font-size: 1.5rem;
+  }
+
+  .heroContent p {
+    font-size: 0.9rem;
+  }
+
+  .productCard {
+    width: 100%;
+  }
+
+  .chairContent h2,
+  .tableContent h2,
+  .lampContent h2 {
+    font-size: 1.5rem;
+  }
+
+  .chairContent p,
+  .tableContent p,
+  .lampContent p {
+    font-size: 0.95rem;
+  }
+
+  .chairContent button,
+  .tableContent button,
+  .lampContent button {
+    padding: 8px 14px;
+  }
+
+  .quoteText {
+    font-size: 0.95rem;
+    padding: 0 1rem;
+  }
+}

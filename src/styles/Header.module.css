@@ -98,3 +98,94 @@
 .iconInline {
   font-size: 1rem;
 }
+
+/* Existing styles ... giữ nguyên từ đầu đến đây */
+
+@media (max-width: 1024px) {
+  .nav {
+    gap: 1.2rem;
+  }
+
+  .icons {
+    gap: 0.6rem;
+  }
+
+  .loginBtn {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+  }
+
+  .iconBtn {
+    font-size: 1rem;
+  }
+
+  .userIcon {
+    font-size: 1.1rem;
+  }
+
+  .logoutBtn {
+    font-size: 1rem;
+  }
+
+  .adminLink {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: flex-start;
+  }
+
+  .icons {
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .loginBtn,
+  .logoutBtn,
+  .iconBtn {
+    font-size: 0.9rem;
+  }
+
+  .logo {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .icons {
+    justify-content: flex-start;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .loginBtn,
+  .logoutBtn {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+  }
+
+  .iconBtn {
+    font-size: 0.9rem;
+  }
+
+  .adminLink {
+    font-size: 0.85rem;
+    margin-left: 0;
+  }
+}
