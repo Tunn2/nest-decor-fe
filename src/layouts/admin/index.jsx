@@ -6,6 +6,8 @@ import {
   AppstoreOutlined,
   HomeOutlined,
   LogoutOutlined,
+  DashboardOutlined,
+  BarChartOutlined
 } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -41,6 +43,12 @@ const AdminLayout = () => {
       onClick: () => navigate("/"),
     },
     {
+      key: "dashboard",
+      icon: <DashboardOutlined />,
+      label: "Thống kê",
+      onClick: () => navigate("/admin/dashboard"),
+    },
+    {
       key: "customer",
       icon: <UserOutlined />,
       label: "Quản lí người dùng",
@@ -51,6 +59,12 @@ const AdminLayout = () => {
       icon: <TeamOutlined />,
       label: "Quản lí nội thất",
       onClick: () => navigate("/admin/furniture"),
+    },
+    {
+      key: "top-selling",
+      icon: <BarChartOutlined />,
+      label: "Sản phẩm bán chạy",
+      onClick: () => navigate("/admin/top-selling"),
     },
     {
       key: "booking",
