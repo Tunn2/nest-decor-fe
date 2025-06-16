@@ -14,7 +14,8 @@ import {
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector(selectUser) || JSON.parse(localStorage.getItem("user"));
+  const user =
+    useSelector(selectUser) || JSON.parse(localStorage.getItem("user"));
 
   const isAdmin = user?.email === "admin@gmail.com";
 
@@ -50,7 +51,11 @@ const Header = () => {
         </button>
 
         {!isAdmin && (
-          <button className={styles.iconBtn} title="Cart">
+          <button
+            className={styles.iconBtn}
+            title="Cart"
+            onClick={() => navigate("/cart")}
+          >
             <FaShoppingCart />
           </button>
         )}

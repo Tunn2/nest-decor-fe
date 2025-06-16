@@ -17,7 +17,7 @@ import Overview from "../pages/customer/profile/Overview";
 import Settings from "../pages/customer/profile/Settings";
 import Security from "../pages/customer/profile/Security";
 import Orders from "../pages/customer/profile/Orders";
-
+import Cart from "../pages/customer/cart";
 
 export const router = createBrowserRouter([
   {
@@ -48,13 +48,16 @@ export const router = createBrowserRouter([
         path: "/profile",
         element: <Profile />,
         children: [
-          { path: "", element: <Overview /> },        
-          { path: "settings", element: <Settings /> }, 
-          { path: "security", element: <Security /> }, 
-          { path: "orders", element: <Orders /> },    
+          { path: "", element: <Overview /> },
+          { path: "settings", element: <Settings /> },
+          { path: "security", element: <Security /> },
+          { path: "orders", element: <Orders /> },
         ],
-      }
-      ,
+      },
+      {
+        path: "/cart",
+        element: <Cart />,
+      },
     ],
   },
   {
