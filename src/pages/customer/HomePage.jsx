@@ -34,7 +34,9 @@ const HomePage = () => {
             Turn your living space into a true home with sophisticated,
             luxurious and inspiring furniture and decoration products.
           </p>
-          <button>View more →</button>
+          <Link to="/shop">
+            <button>View more →</button>
+          </Link>
         </div>
       </section>
 
@@ -68,7 +70,9 @@ const HomePage = () => {
             Illuminate your space with contemporary lights that blend style and
             comfort seamlessly.
           </p>
-          <button>View more →</button>
+          <Link to="/lighting">
+            <button>View more →</button>
+          </Link>
         </div>
       </section>
 
@@ -79,7 +83,9 @@ const HomePage = () => {
             Elevate your interior with sleek, modern chairs that combine style
             and comfort in perfect harmony.
           </p>
-          <button>View more →</button>
+          <Link to="/chairs">
+            <button>View more →</button>
+          </Link>
         </div>
         <div className={styles.chairImage}>
           <img
@@ -102,7 +108,9 @@ const HomePage = () => {
             Functional and elegant tables designed to fit perfectly into your
             modern lifestyle and home space.
           </p>
-          <button>View more →</button>
+          <Link to="/tables">
+            <button>View more →</button>
+          </Link>
         </div>
       </section>
 
@@ -113,7 +121,9 @@ const HomePage = () => {
             Brighten your home with sleek, minimalist lamps that reflect modern
             elegance and everyday functionality.
           </p>
-          <button>View more →</button>
+          <Link to="/lamps">
+            <button>View more →</button>
+          </Link>
         </div>
         <div className={styles.lampImage}>
           <img
@@ -125,7 +135,9 @@ const HomePage = () => {
 
       <div className={styles.deliveryBanner}>
         <p>Order now for an express delivery in 24h!</p>
-        <button>View more →</button>
+        <Link to="/delivery">
+          <button>View more →</button>
+        </Link>
       </div>
 
       <section className={styles.services}>
