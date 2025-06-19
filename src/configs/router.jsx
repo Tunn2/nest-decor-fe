@@ -21,6 +21,9 @@ import Security from "../pages/customer/profile/Security";
 import Orders from "../pages/customer/profile/Orders";
 import Chat from "../pages/customer/profile/Chat";
 import PaymentHistory from "../pages/customer/profile/PaymentHistory";
+import LightingPage from "../pages/customer/LightingPage";
+import ChairPage from "../pages/customer/ChairPage";
+import TablePage from "../pages/customer/TablePage";
 
 
 export const router = createBrowserRouter([
@@ -47,6 +50,22 @@ export const router = createBrowserRouter([
       {
         path: "/blog",
         element: <BlogDetail />,
+      },
+      {
+        path: "/lighting",
+        element: <LightingPage />,
+      },
+      {
+        path: "/chairs",
+        element: <ChairPage />,
+      },
+      {
+        path: "/tables",
+        element: <TablePage />,
+      },
+      {
+        path: "/lamps",
+        element: <LightingPage />,
       },
       {
         path: "/profile",
