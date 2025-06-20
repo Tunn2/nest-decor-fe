@@ -66,12 +66,13 @@
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 500;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.25s ease, color 0.25s ease, transform 0.15s ease;
   position: relative;
 }
 
 .navList a:hover {
   background-color: rgba(255, 255, 255, 0.15);
+  transform: translateX(4px); 
 }
 
 .navList a.active {
@@ -79,6 +80,24 @@
   color: #007bff;
   font-weight: 700;
   box-shadow: inset 4px 0 0 #ffc107;
+  transform: none;
+}
+
+.navList a .anticon {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.navList a:hover .anticon {
+  transform: scale(1.1);
+}
+
+.profileRow {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
 }
 
 .logout {

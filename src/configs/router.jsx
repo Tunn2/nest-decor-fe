@@ -13,10 +13,18 @@ import CustomerManagement from "../pages/admin/customer";
 import FurnitureManagement from "../pages/admin/furniture";
 import CategoryManagement from "../pages/admin/category";
 import OrderManagement from "../pages/admin/order";
+import Dashboard from "../pages/admin/Dashboard";
+import TopSelling from "../pages/admin/TopSelling";
 import Overview from "../pages/customer/profile/Overview";
 import Settings from "../pages/customer/profile/Settings";
 import Security from "../pages/customer/profile/Security";
 import Orders from "../pages/customer/profile/Orders";
+import Chat from "../pages/customer/profile/Chat";
+import PaymentHistory from "../pages/customer/profile/PaymentHistory";
+import LightingPage from "../pages/customer/LightingPage";
+import ChairPage from "../pages/customer/ChairPage";
+import TablePage from "../pages/customer/TablePage";
+
 import Cart from "../pages/customer/cart";
 import CheckoutSuccess from "../pages/customer/checkout-success";
 
@@ -46,12 +54,30 @@ export const router = createBrowserRouter([
         element: <BlogDetail />,
       },
       {
+        path: "/lighting",
+        element: <LightingPage />,
+      },
+      {
+        path: "/chairs",
+        element: <ChairPage />,
+      },
+      {
+        path: "/tables",
+        element: <TablePage />,
+      },
+      {
+        path: "/lamps",
+        element: <LightingPage />,
+      },
+      {
         path: "/profile",
         element: <Profile />,
         children: [
           { path: "", element: <Overview /> },
           { path: "settings", element: <Settings /> },
           { path: "security", element: <Security /> },
+          { path: "payments", element: <PaymentHistory /> },
+          { path: "chat", element: <Chat /> },
           { path: "orders", element: <Orders /> },
         ],
       },
@@ -80,6 +106,14 @@ export const router = createBrowserRouter([
       {
         path: "order",
         element: <OrderManagement />,
+      },
+      {
+        path: "dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "top-selling",
+        element: <TopSelling />,
       },
     ],
   },
