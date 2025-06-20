@@ -39,7 +39,8 @@ const { Title, Text } = Typography;
 const { Header, Content } = Layout;
 const { Option } = Select;
 
-const API_URL = "https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/api/Orders";
+const API_URL =
+  "https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/api/Orders";
 
 const statusMap = {
   "Chờ xác nhận": { color: "orange", icon: <ClockCircleOutlined /> },
@@ -60,7 +61,7 @@ export default function OrderManagement() {
       const data = await res.json();
       setOrders(data.items || []);
     } catch (err) {
-      message.error("Không thể tải đơn hàng!");
+      message.error("Không thể tải đơn hàng!", err.message);
     }
   };
 
@@ -71,7 +72,7 @@ export default function OrderManagement() {
       setSelectedOrder(data);
       setModalVisible(true);
     } catch (err) {
-      message.error("Không thể tải chi tiết đơn hàng!");
+      message.error("Không thể tải chi tiết đơn hàng!", err.message);
     }
   };
 
@@ -121,21 +122,40 @@ export default function OrderManagement() {
 
   const columns = [
     {
-      title: <span><FileTextOutlined className={styles.icon} />Mã đơn hàng</span>,
+      title: (
+        <span>
+          <FileTextOutlined className={styles.icon} />
+          Mã đơn hàng
+        </span>
+      ),
       dataIndex: "id",
       key: "id",
-      render: (id) => <Text strong className={styles.code}>{id}</Text>,
+      render: (id) => (
+        <Text strong className={styles.code}>
+          {id}
+        </Text>
+      ),
       width: 120,
     },
     {
-      title: <span><UserOutlined className={styles.icon} />Khách hàng</span>,
+      title: (
+        <span>
+          <UserOutlined className={styles.icon} />
+          Khách hàng
+        </span>
+      ),
       dataIndex: "customer",
       key: "customer",
       render: (text) => <Text strong>{text}</Text>,
       width: 150,
     },
     {
-      title: <span><CalendarOutlined className={styles.icon} />Ngày tạo</span>,
+      title: (
+        <span>
+          <CalendarOutlined className={styles.icon} />
+          Ngày tạo
+        </span>
+      ),
       dataIndex: "date",
       key: "date",
       render: (text) => <Text type="secondary">{text}</Text>,
@@ -147,12 +167,21 @@ export default function OrderManagement() {
       key: "status",
       render: (status) => {
         const s = statusMap[status] || {};
-        return <Tag icon={s.icon} color={s.color} className={styles.status}>{status}</Tag>;
+        return (
+          <Tag icon={s.icon} color={s.color} className={styles.status}>
+            {status}
+          </Tag>
+        );
       },
       width: 140,
     },
     {
-      title: <span><ShoppingCartOutlined className={styles.icon} />SL</span>,
+      title: (
+        <span>
+          <ShoppingCartOutlined className={styles.icon} />
+          SL
+        </span>
+      ),
       dataIndex: "items",
       key: "items",
       render: (items) => <Badge count={items} className={styles.badge} />,
@@ -160,10 +189,19 @@ export default function OrderManagement() {
       align: "center",
     },
     {
-      title: <span><DollarOutlined className={styles.icon} />Tổng tiền</span>,
+      title: (
+        <span>
+          <DollarOutlined className={styles.icon} />
+          Tổng tiền
+        </span>
+      ),
       dataIndex: "total",
       key: "total",
-      render: (value) => <Text strong style={{ color: "#52c41a" }}>{value.toLocaleString("vi-VN")}₫</Text>,
+      render: (value) => (
+        <Text strong style={{ color: "#52c41a" }}>
+          {value.toLocaleString("vi-VN")}₫
+        </Text>
+      ),
       width: 130,
     },
     {
@@ -171,9 +209,21 @@ export default function OrderManagement() {
       key: "action",
       render: (_, record) => (
         <Space>
-          <Button type="primary" size="small" icon={<EyeOutlined />} onClick={() => fetchOrderDetail(record.id)}>Xem</Button>
-          <Popconfirm title="Xác nhận xóa đơn hàng này?" onConfirm={() => handleDelete(record.id)}>
-            <Button danger size="small" icon={<DeleteOutlined />}>Xóa</Button>
+          <Button
+            type="primary"
+            size="small"
+            icon={<EyeOutlined />}
+            onClick={() => fetchOrderDetail(record.id)}
+          >
+            Xem
+          </Button>
+          <Popconfirm
+            title="Xác nhận xóa đơn hàng này?"
+            onConfirm={() => handleDelete(record.id)}
+          >
+            <Button danger size="small" icon={<DeleteOutlined />}>
+              Xóa
+            </Button>
           </Popconfirm>
         </Space>
       ),
@@ -184,7 +234,9 @@ export default function OrderManagement() {
   return (
     <Layout className={styles.layout}>
       <Header className={styles.header}>
-        <Title level={2} className={styles.title}><FileTextOutlined /> Quản lý đơn hàng</Title>
+        <Title level={2} className={styles.title}>
+          <FileTextOutlined /> Quản lý đơn hàng
+        </Title>
       </Header>
       <Content className={styles.content}>
         <Breadcrumb className={styles.breadcrumb}>
@@ -193,20 +245,77 @@ export default function OrderManagement() {
         </Breadcrumb>
 
         <Row gutter={16} className={styles.statsRow}>
-          <Col span={6}><Card><Statistic title="Tổng đơn hàng" value={stats.total} /></Card></Col>
-          <Col span={6}><Card><Statistic title="Chờ xác nhận" value={stats.pending} valueStyle={{ color: "#fa8c16" }} /></Card></Col>
-          <Col span={6}><Card><Statistic title="Đã giao" value={stats.completed} valueStyle={{ color: "#52c41a" }} /></Card></Col>
-          <Col span={6}><Card><Statistic title="Doanh thu" value={stats.revenue} formatter={value => `${value.toLocaleString("vi-VN")}₫`} /></Card></Col>
+          <Col span={6}>
+            <Card>
+              <Statistic title="Tổng đơn hàng" value={stats.total} />
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="Chờ xác nhận"
+                value={stats.pending}
+                valueStyle={{ color: "#fa8c16" }}
+              />
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="Đã giao"
+                value={stats.completed}
+                valueStyle={{ color: "#52c41a" }}
+              />
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="Doanh thu"
+                value={stats.revenue}
+                formatter={(value) => `${value.toLocaleString("vi-VN")}₫`}
+              />
+            </Card>
+          </Col>
         </Row>
 
         <Card className={styles.tableCard}>
           <Row gutter={16} className={styles.toolbar}>
-            <Col span={8}><Input placeholder="Tìm theo mã/khách hàng..." prefix={<SearchOutlined />} allowClear value={search} onChange={(e) => setSearch(e.target.value)} /></Col>
-            <Col span={6}><Select placeholder="Lọc trạng thái" allowClear value={status || undefined} onChange={setStatus} style={{ width: "100%" }}><Option value="Chờ xác nhận">Chờ xác nhận</Option><Option value="Đã giao">Đã giao</Option><Option value="Đã hủy">Đã hủy</Option></Select></Col>
-            <Col span={4} offset={6} style={{ textAlign: "right" }}><Button type="primary" icon={<PlusOutlined />}>Tạo đơn mới</Button></Col>
+            <Col span={8}>
+              <Input
+                placeholder="Tìm theo mã/khách hàng..."
+                prefix={<SearchOutlined />}
+                allowClear
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </Col>
+            <Col span={6}>
+              <Select
+                placeholder="Lọc trạng thái"
+                allowClear
+                value={status || undefined}
+                onChange={setStatus}
+                style={{ width: "100%" }}
+              >
+                <Option value="Chờ xác nhận">Chờ xác nhận</Option>
+                <Option value="Đã giao">Đã giao</Option>
+                <Option value="Đã hủy">Đã hủy</Option>
+              </Select>
+            </Col>
+            <Col span={4} offset={6} style={{ textAlign: "right" }}>
+              <Button type="primary" icon={<PlusOutlined />}>
+                Tạo đơn mới
+              </Button>
+            </Col>
           </Row>
           <Divider />
-          <Table columns={columns} dataSource={filtered} pagination={{ pageSize: 10 }} rowKey="id" />
+          <Table
+            columns={columns}
+            dataSource={filtered}
+            pagination={{ pageSize: 10 }}
+            rowKey="id"
+          />
         </Card>
 
         <Modal
@@ -217,12 +326,32 @@ export default function OrderManagement() {
         >
           {selectedOrder ? (
             <div>
-              <p><strong>Khách hàng:</strong> {selectedOrder.customer}</p>
-              <p><strong>Ngày tạo:</strong> {selectedOrder.date}</p>
-              <p><strong>Trạng thái:</strong> {selectedOrder.status}</p>
-              <p><strong>Tổng tiền:</strong> {selectedOrder.total?.toLocaleString("vi-VN")}₫</p>
-              <Button onClick={() => updateOrderStatus(selectedOrder.id, "Đã giao")} type="primary" style={{ marginRight: 8 }}>Đánh dấu đã giao</Button>
-              <Button onClick={() => updateOrderStatus(selectedOrder.id, "Đã hủy")} danger>Hủy đơn</Button>
+              <p>
+                <strong>Khách hàng:</strong> {selectedOrder.customer}
+              </p>
+              <p>
+                <strong>Ngày tạo:</strong> {selectedOrder.date}
+              </p>
+              <p>
+                <strong>Trạng thái:</strong> {selectedOrder.status}
+              </p>
+              <p>
+                <strong>Tổng tiền:</strong>{" "}
+                {selectedOrder.total?.toLocaleString("vi-VN")}₫
+              </p>
+              <Button
+                onClick={() => updateOrderStatus(selectedOrder.id, "Đã giao")}
+                type="primary"
+                style={{ marginRight: 8 }}
+              >
+                Đánh dấu đã giao
+              </Button>
+              <Button
+                onClick={() => updateOrderStatus(selectedOrder.id, "Đã hủy")}
+                danger
+              >
+                Hủy đơn
+              </Button>
             </div>
           ) : null}
         </Modal>

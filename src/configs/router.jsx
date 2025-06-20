@@ -25,6 +25,8 @@ import LightingPage from "../pages/customer/LightingPage";
 import ChairPage from "../pages/customer/ChairPage";
 import TablePage from "../pages/customer/TablePage";
 
+import Cart from "../pages/customer/cart";
+import CheckoutSuccess from "../pages/customer/checkout-success";
 
 export const router = createBrowserRouter([
   {
@@ -78,8 +80,11 @@ export const router = createBrowserRouter([
           { path: "chat", element: <Chat /> },
           { path: "orders", element: <Orders /> },
         ],
-      }
-      ,
+      },
+      {
+        path: "/cart",
+        element: <Cart />,
+      },
     ],
   },
   {
@@ -119,5 +124,9 @@ export const router = createBrowserRouter([
   {
     path: "register",
     element: <Register />,
+  },
+  {
+    path: "checkout",
+    element: <CheckoutSuccess />,
   },
 ]);

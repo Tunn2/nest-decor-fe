@@ -1,20 +1,27 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../../redux/features/cartSlice"; // Import action từ cartSlice
 import { Button } from "../../../components/ui/button";
 import { Card, CardContent } from "../../../components/ui/card";
 import { Badge } from "../../../components/ui/badge";
+import { toast } from "react-toastify";
 import "./index.css";
 
 const formatPriceVND = (price) => {
-  return price
-    ?.toFixed(0)
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "₫";
+  return price?.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "₫";
 };
 
 function Filter({ className = "", ...props }) {
   return (
-    <svg className={`icon filter-icon ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+    <svg
+      className={`icon filter-icon ${className}`}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      {...props}
+    >
       <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46" />
     </svg>
   );
@@ -22,13 +29,56 @@ function Filter({ className = "", ...props }) {
 
 function Star({ className = "", filled = false, ...props }) {
   return (
-    <svg className={`star-icon ${filled ? "star-filled" : "star-empty"} ${className}`} fill={filled ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24" {...props}>
+    <svg
+      className={`star-icon ${
+        filled ? "star-filled" : "star-empty"
+      } ${className}`}
+      fill={filled ? "currentColor" : "none"}
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      {...props}
+    >
       <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
     </svg>
   );
 }
 
 function ProductCard({ product }) {
+  const dispatch = useDispatch();
+  const [isAdding, setIsAdding] = useState(false);
+
+  const handleAddToCart = async (e) => {
+    e.preventDefault(); // Ngăn chặn navigation khi click button
+    e.stopPropagation(); // Ngăn chặn event bubbling
+
+    setIsAdding(true);
+
+    try {
+      // Dispatch action add to cart
+      dispatch(
+        addToCart({
+          id: product.id,
+          name: product.name,
+          price: product.basePrice,
+          quantity: 1,
+          image: product.imageUrl || "/placeholder.svg",
+          categoryId: product.categoryId,
+          defaultDimensions: {
+            height: product.sizeConfig.defaultHeight || 0,
+            width: product.sizeConfig.defaultWidth || 0,
+            length: product.sizeConfig.defaultLength || 0,
+          },
+        })
+      );
+      toast.success("Đã thêm vào giỏ hàng!");
+    } catch (error) {
+      console.error("Lỗi khi thêm vào giỏ hàng:", error);
+      toast.error("Có lỗi xảy ra!");
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
   return (
     <Card className="product-card">
       <CardContent className="card-content" style={{ padding: 0 }}>
@@ -40,7 +90,9 @@ function ProductCard({ product }) {
               className="product-image"
             />
           </Link>
-          <Badge variant="new" className="product-badge">New</Badge>
+          <Badge variant="new" className="product-badge">
+            New
+          </Badge>
         </div>
         <div className="product-info">
           <h3 className="product-name">{product.name}</h3>
@@ -53,8 +105,17 @@ function ProductCard({ product }) {
             <span className="rating-count">(5)</span>
           </div>
           <div className="product-footer">
-            <span className="product-price">{formatPriceVND(product.basePrice)}</span>
-            <Button size="sm">Add to Cart</Button>
+            <span className="product-price">
+              {formatPriceVND(product.basePrice)}
+            </span>
+            <Button
+              size="sm"
+              onClick={handleAddToCart}
+              disabled={isAdding}
+              className={isAdding ? "loading" : ""}
+            >
+              {isAdding ? "Đang thêm..." : "Add to Cart"}
+            </Button>
           </div>
         </div>
       </CardContent>
@@ -69,14 +130,15 @@ function Shop() {
   const [selectedPriceRange, setSelectedPriceRange] = useState("");
   const [sortOption, setSortOption] = useState("featured");
 
-  const API_BASE = "https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/api";
+  const API_BASE =
+    "https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/api";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [furnitureRes, categoriesRes] = await Promise.all([
           axios.get(`${API_BASE}/Furniture`),
-          axios.get(`${API_BASE}/Categories`)
+          axios.get(`${API_BASE}/Categories`),
         ]);
 
         setProducts(furnitureRes.data.items);
@@ -104,26 +166,31 @@ function Shop() {
 
   const filteredProducts = Array.isArray(products)
     ? products
-      .filter((product) => {
-        const categoryMatch =
-          selectedCategories.length === 0 || selectedCategories.includes(product.categoryId);
+        .filter((product) => {
+          const categoryMatch =
+            selectedCategories.length === 0 ||
+            selectedCategories.includes(product.categoryId);
 
-        const price = product.basePrice;
-        const priceMatch =
-          selectedPriceRange === "" ||
-          (selectedPriceRange === "under-500000" && price < 500000) ||
-          (selectedPriceRange === "500000-1000000" && price >= 500000 && price <= 1000000) ||
-          (selectedPriceRange === "1000000-2000000" && price > 1000000 && price <= 2000000) ||
-          (selectedPriceRange === "over-2000000" && price > 2000000);
+          const price = product.basePrice;
+          const priceMatch =
+            selectedPriceRange === "" ||
+            (selectedPriceRange === "under-500000" && price < 500000) ||
+            (selectedPriceRange === "500000-1000000" &&
+              price >= 500000 &&
+              price <= 1000000) ||
+            (selectedPriceRange === "1000000-2000000" &&
+              price > 1000000 &&
+              price <= 2000000) ||
+            (selectedPriceRange === "over-2000000" && price > 2000000);
 
-        return categoryMatch && priceMatch;
-      })
-      .sort((a, b) => {
-        if (sortOption === "price-low-high") return a.basePrice - b.basePrice;
-        if (sortOption === "price-high-low") return b.basePrice - a.basePrice;
-        if (sortOption === "all") return 0;
-        return 0;
-      })
+          return categoryMatch && priceMatch;
+        })
+        .sort((a, b) => {
+          if (sortOption === "price-low-high") return a.basePrice - b.basePrice;
+          if (sortOption === "price-high-low") return b.basePrice - a.basePrice;
+          if (sortOption === "all") return 0;
+          return 0;
+        })
     : [];
 
   return (
