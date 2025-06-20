@@ -18,6 +18,7 @@ import Settings from "../pages/customer/profile/Settings";
 import Security from "../pages/customer/profile/Security";
 import Orders from "../pages/customer/profile/Orders";
 import Cart from "../pages/customer/cart";
+import CheckoutSuccess from "../pages/customer/checkout-success";
 
 export const router = createBrowserRouter([
   {
@@ -89,5 +90,9 @@ export const router = createBrowserRouter([
   {
     path: "register",
     element: <Register />,
+  },
+  {
+    path: "checkout",
+    element: <CheckoutSuccess />,
   },
 ]);

@@ -63,6 +63,11 @@ function ProductCard({ product }) {
           quantity: 1,
           image: product.imageUrl || "/placeholder.svg",
           categoryId: product.categoryId,
+          defaultDimensions: {
+            height: product.sizeConfig.defaultHeight || 0,
+            width: product.sizeConfig.defaultWidth || 0,
+            length: product.sizeConfig.defaultLength || 0,
+          },
         })
       );
       toast.success("Đã thêm vào giỏ hàng!");
