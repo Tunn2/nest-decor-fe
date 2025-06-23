@@ -138,7 +138,7 @@ function Cart() {
 
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/Orders`,
+        `https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/api/Orders`,
         checkoutData
       );
       console.log(res);
