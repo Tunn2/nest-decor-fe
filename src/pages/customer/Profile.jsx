@@ -2,8 +2,6 @@ import React from "react";
 import { Layout, Menu, Avatar, Typography } from "antd";
 import {
   UserOutlined,
-  SettingOutlined,
-  LockOutlined,
   ShoppingOutlined,
   LogoutOutlined,
   MessageOutlined,
@@ -30,39 +28,32 @@ const Profile = () => {
     {
       key: "overview",
       icon: <UserOutlined style={{ color: "#1677ff" }} />,
-      label: <NavLink to="/profile">Overview</NavLink>,
+      label: <NavLink to="/profile">Tổng quan</NavLink>,
     },
-    //{
-      //key: "settings",
-      //icon: <SettingOutlined style={{ color: "#1677ff" }} />,
-      //label: <NavLink to="/profile/settings">Settings</NavLink>,
-    //},
-    /*{
-      key: "security",
-      icon: <LockOutlined style={{ color: "#1677ff" }} />,
-      label: <NavLink to="/profile/security">Security</NavLink>,
-    },*/
     {
       key: "orders",
       icon: <ShoppingOutlined style={{ color: "#1677ff" }} />,
-      label: <NavLink to="/profile/orders">Orders</NavLink>,
+      label: <NavLink to="/profile/orders">Đơn hàng</NavLink>,
     },
     {
       key: "payments",
       icon: <DollarCircleOutlined style={{ color: "#1677ff" }} />,
-      label: <NavLink to="/profile/payments">Payments</NavLink>,
+      label: <NavLink to="/profile/payments">Thanh toán</NavLink>,
     },
     {
       key: "chat",
       icon: <MessageOutlined style={{ color: "#1677ff" }} />,
-      label: <NavLink to="/profile/chat">Chat</NavLink>,
+      label: <NavLink to="/profile/chat">Trò chuyện</NavLink>,
     },
     {
       key: "logout",
       icon: <LogoutOutlined style={{ color: "#faad14" }} />,
       label: (
-        <span onClick={handleLogout} style={{ fontWeight: "bold", color: "#faad14" }}>
-          Logout
+        <span
+          onClick={handleLogout}
+          style={{ fontWeight: "bold", color: "#faad14" }}
+        >
+          Đăng xuất
         </span>
       ),
     },
@@ -88,7 +79,9 @@ const Profile = () => {
               border: "2px solid #91caff",
             }}
           />
-          <Title level={4} style={{ marginTop: 12 }}>{user?.fullName || "User Name"}</Title>
+          <Title level={4} style={{ marginTop: 12 }}>
+            {user?.fullName || "Tên người dùng"}
+          </Title>
           <Text type="secondary">{user?.email || "user@example.com"}</Text>
         </div>
 

@@ -15,7 +15,7 @@ const HomePage = () => {
         const limitedProducts = (data.items || []).slice(0, 4);
         setProducts(limitedProducts);
       } catch (err) {
-        console.error("Failed to fetch furniture data:", err);
+        console.error("Không thể lấy dữ liệu sản phẩm:", err);
       }
     };
 
@@ -29,22 +29,20 @@ const HomePage = () => {
     <div className={styles.home}>
       <section className={styles.hero}>
         <div className={styles.heroContent}>
-          <h1>ALL FOR YOUR HOME</h1>
+          <h1>MỌI THỨ CHO TỔ ẤM CỦA BẠN</h1>
           <p>
-            Turn your living space into a true home with sophisticated,
-            luxurious and inspiring furniture and decoration products.
+            Biến không gian sống thành ngôi nhà thực thụ với nội thất và đồ trang trí tinh tế, sang trọng và đầy cảm hứng.
           </p>
           <Link to="/shop">
-            <button>View more →</button>
+            <button>Xem thêm →</button>
           </Link>
         </div>
       </section>
 
       <section className={styles.productsWeek}>
-        <h2>PRODUCTS OF THE WEEK</h2>
+        <h2>SẢN PHẨM NỔI BẬT TRONG TUẦN</h2>
         <p>
-          Discover this week's trending and recommended products handpicked for
-          you.
+          Khám phá những sản phẩm được yêu thích và đề xuất trong tuần này dành riêng cho bạn.
         </p>
         <div className={styles.productGrid}>
           {products.map((item) => (
@@ -67,30 +65,28 @@ const HomePage = () => {
       <section className={styles.bannerSection}>
         <div className={styles.bannerContent}>
           <p>
-            Illuminate your space with contemporary lights that blend style and
-            comfort seamlessly.
+            Thắp sáng không gian với những mẫu đèn hiện đại, kết hợp hài hòa giữa phong cách và sự tiện nghi.
           </p>
           <Link to="/lighting">
-            <button>View more →</button>
+            <button>Xem thêm →</button>
           </Link>
         </div>
       </section>
 
       <section className={styles.stylishChairs}>
         <div className={styles.chairContent}>
-          <h2>STYLISH CHAIRS</h2>
+          <h2>GHẾ PHONG CÁCH</h2>
           <p>
-            Elevate your interior with sleek, modern chairs that combine style
-            and comfort in perfect harmony.
+            Nâng tầm nội thất với những chiếc ghế hiện đại, mang lại sự thoải mái và thẩm mỹ hoàn hảo.
           </p>
           <Link to="/chairs">
-            <button>View more →</button>
+            <button>Xem thêm →</button>
           </Link>
         </div>
         <div className={styles.chairImage}>
           <img
             src="https://furniture123.co.uk/Images/BUNKOR00195433_3_Supersize.jpg?v=79"
-            alt="Stylish Chair"
+            alt="Ghế hiện đại"
           />
         </div>
       </section>
@@ -99,68 +95,66 @@ const HomePage = () => {
         <div className={styles.tableImage}>
           <img
             src="https://mysleepyhead.com/media/catalog/product/s/l/sleepyhead_product_ls_309_new.jpg"
-            alt="Table"
+            alt="Bàn"
           />
         </div>
         <div className={styles.tableContent}>
-          <h2>TABLE</h2>
+          <h2>BÀN</h2>
           <p>
-            Functional and elegant tables designed to fit perfectly into your
-            modern lifestyle and home space.
+            Những chiếc bàn tiện dụng và tinh tế, phù hợp với phong cách sống hiện đại của bạn.
           </p>
           <Link to="/tables">
-            <button>View more →</button>
+            <button>Xem thêm →</button>
           </Link>
         </div>
       </section>
 
       <section className={styles.contemporaryLamps}>
         <div className={styles.lampContent}>
-          <h2>CONTEMPORARY LAMPS</h2>
+          <h2>ĐÈN HIỆN ĐẠI</h2>
           <p>
-            Brighten your home with sleek, minimalist lamps that reflect modern
-            elegance and everyday functionality.
+            Thắp sáng ngôi nhà của bạn với những mẫu đèn tối giản, thanh lịch và đầy tính ứng dụng.
           </p>
           <Link to="/lamps">
-            <button>View more →</button>
+            <button>Xem thêm →</button>
           </Link>
         </div>
         <div className={styles.lampImage}>
           <img
             src="https://www.livingandhome.co.uk/cdn/shop/products/1_21c04911-4665-449a-b182-86162a75fa31.jpg?v=1694060842"
-            alt="Contemporary Lamp"
+            alt="Đèn hiện đại"
           />
         </div>
       </section>
 
       <div className={styles.deliveryBanner}>
-        <p>Order now for an express delivery in 24h!</p>
+        <p>Đặt hàng ngay để nhận giao hàng hỏa tốc trong 24h!</p>
         <Link to="/delivery">
-          <button>View more →</button>
+          <button>Xem thêm →</button>
         </Link>
       </div>
 
       <section className={styles.services}>
         {[
           {
-            title: "Shop online",
+            title: "Mua sắm trực tuyến",
             icon: "🛒",
-            desc: "Easily browse and order products anytime, anywhere.",
+            desc: "Dễ dàng tìm kiếm và đặt hàng mọi lúc, mọi nơi.",
           },
           {
-            title: "Free shipping",
+            title: "Miễn phí vận chuyển",
             icon: "🚚",
-            desc: "Free delivery for eligible orders nationwide.",
+            desc: "Giao hàng miễn phí với các đơn đủ điều kiện toàn quốc.",
           },
           {
-            title: "Return policy",
+            title: "Chính sách hoàn trả",
             icon: "↩️",
-            desc: "Fast and easy returns within 7 days.",
+            desc: "Đổi trả dễ dàng trong vòng 7 ngày.",
           },
           {
-            title: "PAYMENT",
+            title: "Thanh toán",
             icon: "💳",
-            desc: "Secure checkout with multiple payment methods.",
+            desc: "Thanh toán an toàn với nhiều phương thức linh hoạt.",
           },
         ].map((item, idx) => (
           <div key={idx} className={styles.service}>
@@ -175,9 +169,9 @@ const HomePage = () => {
         {[1, 2].map((id) => (
           <div key={id} className={styles.blogPost}>
             <img src={`/assets/blog${id}.jpg`} alt={`Blog ${id}`} />
-            <p className={styles.date}>29 sep,2022 / by soroush norozy</p>
-            <h4>Your office should have only natural materials</h4>
-            <a href="#">read more</a>
+            <p className={styles.date}>29 Tháng 9, 2022 / bởi Soroush Norozy</p>
+            <h4>Văn phòng của bạn nên sử dụng vật liệu tự nhiên</h4>
+            <a href="#">Xem thêm</a>
           </div>
         ))}
       </section>
@@ -185,15 +179,15 @@ const HomePage = () => {
       <section className={styles.quote}>
         <span className={styles.quoteIcon}>❝</span>
         <p className={styles.quoteText}>
-          “Design is not just what it looks like and feels like. <br />
-          Design is how it works.”
+          “Thiết kế không chỉ là những gì bạn nhìn thấy và cảm nhận. <br />
+          Thiết kế là cách nó hoạt động.”
         </p>
         <div className={styles.arrows}>
           <span className={styles.arrow}>‹</span>
           <span className={styles.arrow}>›</span>
         </div>
         <p className={styles.author}>
-          <span>Designer</span>
+          <span>Nhà thiết kế</span>
           <br />
           <strong>Steve Jobs</strong>
         </p>

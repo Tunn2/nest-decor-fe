@@ -6,30 +6,30 @@ const About = () => {
     <>
       <div className={styles.about}>
         <section className={styles.hero}>
-          <h1>About us</h1>
+          <h1>Về chúng tôi</h1>
         </section>
 
         <section className={styles.services}>
           {[
             {
-              title: "Shop online",
+              title: "Mua sắm trực tuyến",
               icon: "🛒",
-              desc: "Easily browse and order products anytime, anywhere.",
+              desc: "Dễ dàng tìm kiếm và đặt hàng mọi lúc, mọi nơi.",
             },
             {
-              title: "Free shipping",
+              title: "Miễn phí vận chuyển",
               icon: "🚚",
-              desc: "Free delivery for eligible orders nationwide.",
+              desc: "Giao hàng miễn phí cho các đơn đủ điều kiện trên toàn quốc.",
             },
             {
-              title: "Return policy",
+              title: "Chính sách đổi trả",
               icon: "↩️",
-              desc: "Fast and easy returns within 7 days.",
+              desc: "Đổi trả nhanh chóng trong vòng 7 ngày.",
             },
             {
-              title: "PAYMENT",
+              title: "Thanh toán",
               icon: "💳",
-              desc: "Secure checkout with multiple payment methods.",
+              desc: "Thanh toán an toàn với nhiều hình thức tiện lợi.",
             },
           ].map((item, idx) => (
             <div key={idx} className={styles.service}>
@@ -43,7 +43,7 @@ const About = () => {
         <section className={styles.videoSection}>
           <img
             src="/assets/ab2.jpg"
-            alt="About video"
+            alt="Video giới thiệu"
             className={styles.videoBg}
           />
         </section>
@@ -51,21 +51,20 @@ const About = () => {
         <section className={styles.skills}>
           <div className={styles.text}>
             <h2>
-              Functionality <br />
-              meets perfection
+              Tính năng <br />
+              và sự hoàn hảo
             </h2>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse massa libero, mattis volutpat id. Egestas adipiscing
-              placerat eleifend a nascetur. Mattis proin enim, nam porttitor
-              vitae.
+              Chúng tôi kết hợp giữa sáng tạo và chất lượng, mang đến trải nghiệm
+              hoàn hảo cho không gian sống của bạn. Thiết kế hiện đại, tiện nghi,
+              dễ dàng tùy chỉnh phù hợp với mọi nhu cầu.
             </p>
           </div>
           <div className={styles.bars}>
             {[
-              { label: "Creativity", value: 72 },
-              { label: "Advertising", value: 84 },
-              { label: "Design", value: 72 },
+              { label: "Sáng tạo", value: 72 },
+              { label: "Quảng bá", value: 84 },
+              { label: "Thiết kế", value: 72 },
             ].map((bar, idx) => (
               <div key={idx} className={styles.bar}>
                 <div className={styles.barLabel}>
@@ -83,27 +82,27 @@ const About = () => {
         </section>
 
         <section className={styles.blog}>
-          <h3>Last blog post</h3>
+          <h3>Bài viết mới nhất</h3>
           <div className={styles.blogList}>
             <div className={styles.blogCard}>
-              <img src="/assets/ab3.jpg" alt="Cozy Work Corner" />
-              <p className={styles.date}>Sep 26, 2022</p>
-              <h4>Create a cozy corner in your office with natural tones</h4>
-              <a href="#">Read more</a>
+              <img src="/assets/ab3.jpg" alt="Góc làm việc ấm cúng" />
+              <p className={styles.date}>26 Tháng 9, 2022</p>
+              <h4>Tạo góc làm việc ấm cúng với tông màu tự nhiên</h4>
+              <a href="#">Xem thêm</a>
             </div>
 
             <div className={styles.blogCard}>
-              <img src="/assets/ab4.webp" alt="Blue Chair Design" />
-              <p className={styles.date}>Oct 3, 2022</p>
-              <h4>Why blue is the calmest color for your workspace</h4>
-              <a href="#">Read more</a>
+              <img src="/assets/ab4.webp" alt="Ghế xanh dương" />
+              <p className={styles.date}>3 Tháng 10, 2022</p>
+              <h4>Vì sao xanh dương là màu tạo cảm giác thư giãn nhất</h4>
+              <a href="#">Xem thêm</a>
             </div>
 
             <div className={styles.blogCard}>
-              <img src="/assets/ab5.jpg" alt="Minimalist Interior" />
-              <p className={styles.date}>Oct 15, 2022</p>
-              <h4>Minimalist interior tips for a brighter home</h4>
-              <a href="#">Read more</a>
+              <img src="/assets/ab5.jpg" alt="Không gian tối giản" />
+              <p className={styles.date}>15 Tháng 10, 2022</p>
+              <h4>Mẹo thiết kế nội thất tối giản cho ngôi nhà sáng hơn</h4>
+              <a href="#">Xem thêm</a>
             </div>
           </div>
         </section>

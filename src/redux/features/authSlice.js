@@ -25,6 +25,7 @@ export const loginUser = createAsyncThunk("auth/login", async (formData, thunkAP
     }
 
     const userInfo = await userRes.json();
+    console.log("userInfo", userInfo);
 
     return {
       ...userInfo,
