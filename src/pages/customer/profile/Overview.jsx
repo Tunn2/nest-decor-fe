@@ -1,87 +1,134 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { selectUser } from "../../../redux/features/authSlice";
-import { Avatar, Typography, Divider, Progress, Button, Space } from "antd";
+import {
+  Button,
+  Input,
+  Typography,
+  notification,
+  Card,
+  Space,
+  Divider,
+  Avatar,
+} from "antd";
+import { EditOutlined, SaveOutlined, UserOutlined } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 
 const Overview = () => {
   const user = useSelector(selectUser);
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const fullName = user?.fullName || "N/A";
-  const email = user?.email || "N/A";
-  const role = user?.roleName || "Customer";
-  const status = user?.isActive === false ? "Inactive" : "Active";
-  const createdAt = user?.createdAt
-    ? new Date(user.createdAt).toLocaleDateString()
-    : "June 2025";
+  const [editMode, setEditMode] = useState(false);
+  const [formData, setFormData] = useState({ fullName: "", email: "" });
 
-  const profileCompletion = user?.avatar ? 100 : 80;
+  useEffect(() => {
+    if (user) {
+      setFormData({ fullName: user.fullName || "", email: user.email || "" });
+    }
+  }, [user]);
 
-  const handleEditProfile = () => {
-    navigate("/profile/settings");
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSave = async () => {
+    try {
+      const res = await fetch(
+        `https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/api/Users/${user.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: user.id,
+            fullName: formData.fullName,
+            email: formData.email,
+            dateCreated: user.dateCreated,
+          }),
+        }
+      );
+
+      if (!res.ok) throw new Error("Cập nhật thất bại");
+
+      const updatedUser = await res.json();
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      dispatch({ type: "auth/setUser", payload: updatedUser });
+
+      notification.success({
+        message: "Cập nhật thành công",
+        description: "Thông tin tài khoản đã được lưu!",
+        placement: "topRight",
+      });
+
+      setEditMode(false);
+    } catch (err) {
+      notification.error({
+        message: "Lỗi",
+        description: err.message,
+        placement: "topRight",
+      });
+    }
+  };
+
+  if (!user) return <p>Không có thông tin người dùng.</p>;
+
   return (
-    <div className="profileCard">
-      <div className="profileHeader">
+    <div style={{ padding: 40, display: "flex", justifyContent: "center" }}>
+      <Card
+        style={{
+          width: 500,
+          borderRadius: 16,
+          boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+          textAlign: "center",
+        }}
+      >
         <Avatar
           size={96}
-          style={{
-            backgroundColor: "#e6f4ff",
-            color: "#1677ff",
-            fontSize: 32,
-            marginBottom: 16,
-          }}
-        >
-          {fullName?.charAt(0)?.toUpperCase()}
-        </Avatar>
-        <Title level={3}>{fullName}</Title>
-        <Text type="secondary">{email}</Text>
-      </div>
-
-      <Divider />
-
-      <div className="profileInfo">
-        <div className="profileRow">
-          <span className="label">Account Type:</span>
-          <span className="value">{role}</span>
-        </div>
-
-        <div className="profileRow">
-          <span className="label">Status:</span>
-          <span className="value">{status}</span>
-        </div>
-
-        <div className="profileRow">
-          <span className="label">Member Since:</span>
-          <span className="value">{createdAt}</span>
-        </div>
-      </div>
-
-      <Divider />
-
-      <div style={{ marginTop: 24 }}>
-        <Text strong>Profile Completion</Text>
-        <Progress
-          percent={profileCompletion}
-          status={profileCompletion < 100 ? "active" : "success"}
-          strokeColor={{
-            from: "#108ee9",
-            to: "#87d068",
-          }}
+          icon={<UserOutlined />}
+          src={user.imageBase64 ? `data:image/png;base64,${user.imageBase64}` : null}
+          style={{ marginBottom: 20 }}
         />
-      </div>
+        <Title level={4}>Thông tin tài khoản</Title>
+        <Divider />
 
-      <Divider />
+        <Space direction="vertical" size="middle" style={{ width: "100%", textAlign: "left" }}>
+          <div>
+            <Text strong>Họ và tên:</Text>
+            {editMode ? (
+              <Input name="fullName" value={formData.fullName} onChange={handleChange} />
+            ) : (
+              <div>{user.fullName || "N/A"}</div>
+            )}
+          </div>
 
-      <Space style={{ marginTop: 16 }}>
-        <Button type="primary" onClick={handleEditProfile}>
-          Chỉnh sửa hồ sơ
-        </Button>
-      </Space>
+          <div>
+            <Text strong>Email:</Text>
+            {editMode ? (
+              <Input name="email" value={formData.email} onChange={handleChange} />
+            ) : (
+              <div>{user.email || "N/A"}</div>
+            )}
+          </div>
+
+          <div>
+            <Text strong>Ngày tạo:</Text>
+            <div>{user.dateCreated ? new Date(user.dateCreated).toLocaleDateString("vi-VN") : "N/A"}</div>
+          </div>
+        </Space>
+
+        <Divider />
+
+        {editMode ? (
+          <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
+            Lưu thay đổi
+          </Button>
+        ) : (
+          <Button icon={<EditOutlined />} onClick={() => setEditMode(true)}>
+            Chỉnh sửa hồ sơ
+          </Button>
+        )}
+      </Card>
     </div>
   );
 };

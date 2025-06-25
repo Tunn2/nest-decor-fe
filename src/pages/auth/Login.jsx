@@ -1,55 +1,47 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash, FaCheckCircle } from "react-icons/fa";
 import styles from "../../styles/Login.module.css";
 import Header from "../../components/Header";
+import { loginUser, selectError, selectLoading } from "../../redux/features/authSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [error, setError] = useState("");
+
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    try {
-      const loginRes = await fetch("https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+    setSuccessMessage("");
 
-      if (!loginRes.ok) throw new Error("Login failed");
-      const loginData = await loginRes.json();
-      const userId = loginData.userId;
+    const action = await dispatch(loginUser(formData));
 
-      const userRes = await fetch(`https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/api/Users/${userId}`);
-      if (!userRes.ok) throw new Error("Failed to fetch user info");
-
-      const user = await userRes.json();
-      localStorage.setItem("user", JSON.stringify(user));
-
-      dispatch({ type: "auth/setUser", payload: user });
-
-      setSuccessMessage("Login successful!");
+    if (loginUser.fulfilled.match(action)) {
+      const user = action.payload;
+      setSuccessMessage("Đăng nhập thành công!");
       setTimeout(() => {
         setSuccessMessage("");
-        if (user.email === "admin@gmail.com") navigate("/admin/furniture");
-        else navigate("/");
+        if (user.email === "admin@gmail.com") {
+          navigate("/admin/furniture");
+        } 
+        else if (user.email === "staff@gmail.com") {
+          navigate("/staff/order");
+        } else {
+          navigate("/");
+        }
       }, 1500);
-
-    } catch (err) {
-      console.error("Login error:", err);
-      setError(err.message);
     }
   };
 
@@ -66,7 +58,8 @@ const Login = () => {
 
       <div className={styles.loginWrapper}>
         <div className={styles.loginBox}>
-          <h2>Login</h2>
+          <h2>Đăng nhập</h2>
+
           {error && <p className={styles.error}>{error}</p>}
 
           <form onSubmit={handleSubmit}>
@@ -78,27 +71,34 @@ const Login = () => {
               onChange={handleChange}
               required
             />
+
             <div className={styles.passwordField}>
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
-                placeholder="Password"
+                placeholder="Mật khẩu"
                 value={formData.password}
                 onChange={handleChange}
                 required
               />
               <span
                 className={styles.eyeIcon}
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => setShowPassword((prev) => !prev)}
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
-            <button type="submit">Login</button>
+
+            <button type="submit" disabled={loading}>
+              {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+            </button>
           </form>
 
           <p>
-            Don't have an account? <a href="/register">Register here</a>
+            Chưa có tài khoản?{" "}
+            <a href="/register" className={styles.registerLink}>
+              Đăng ký ngay
+            </a>
           </p>
         </div>
       </div>

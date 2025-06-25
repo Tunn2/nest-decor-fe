@@ -18,6 +18,7 @@ const Header = () => {
     useSelector(selectUser) || JSON.parse(localStorage.getItem("user"));
 
   const isAdmin = user?.email === "admin@gmail.com";
+  const isStaff = user?.email === "staff@gmail.com";
 
   const handleLogout = () => {
     dispatch(logout());
@@ -33,27 +34,33 @@ const Header = () => {
       <div className={styles.logo}>DecoNest</div>
 
       <nav className={styles.nav}>
-        <Link to="/">Home</Link>
-        <Link to="/shop">Shop</Link>
-        <Link to="/about">About us</Link>
+        <Link to="/">Trang chủ</Link>
+        <Link to="/shop">Cửa hàng</Link>
+        <Link to="/about">Về chúng tôi</Link>
         <Link to="/blog">Blog</Link>
         {isAdmin && (
           <Link to="/admin/furniture" className={styles.adminLink}>
             <FaTools className={styles.iconInline} />
-            Shop Management
+            Quản lý shop
+          </Link>
+        )}
+        {isStaff && (
+          <Link to="/staff/order" className={styles.adminLink}>
+            <FaTools className={styles.iconInline} />
+            Quản lý cho nhân viên
           </Link>
         )}
       </nav>
 
       <div className={styles.icons}>
-        <button className={styles.iconBtn} title="Search">
+        <button className={styles.iconBtn} title="Tìm kiếm">
           <FaSearch />
         </button>
 
         {!isAdmin && (
           <button
             className={styles.iconBtn}
-            title="Cart"
+            title="Giỏ hàng"
             onClick={() => navigate("/cart")}
           >
             <FaShoppingCart />
@@ -66,13 +73,13 @@ const Header = () => {
               className={styles.loginBtn}
               onClick={() => navigate("/login")}
             >
-              Login
+              Đăng nhập
             </button>
             <button
               className={styles.loginBtn}
               onClick={() => navigate("/register")}
             >
-              Register
+              Đăng ký
             </button>
           </>
         ) : (
@@ -81,7 +88,7 @@ const Header = () => {
               <button
                 className={styles.iconBtn}
                 onClick={goToProfile}
-                title="Profile"
+                title="Trang cá nhân"
               >
                 <FaUserCircle className={styles.userIcon} />
               </button>
@@ -89,7 +96,7 @@ const Header = () => {
             <button
               className={styles.logoutBtn}
               onClick={handleLogout}
-              title="Logout"
+              title="Đăng xuất"
             >
               <FaSignOutAlt />
             </button>

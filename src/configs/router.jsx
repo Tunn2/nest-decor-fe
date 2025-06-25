@@ -9,12 +9,15 @@ import ProductDetail from "../pages/customer/product-detail";
 import BlogDetail from "../pages/customer/BlogDetail";
 import Profile from "../pages/customer/Profile";
 import AdminLayout from "../layouts/admin";
+import StaffLayout from "../layouts/staff";
+
 import CustomerManagement from "../pages/admin/customer";
 import FurnitureManagement from "../pages/admin/furniture";
 import CategoryManagement from "../pages/admin/category";
 import OrderManagement from "../pages/admin/order";
 import Dashboard from "../pages/admin/Dashboard";
 import TopSelling from "../pages/admin/TopSelling";
+
 import Overview from "../pages/customer/profile/Overview";
 import Settings from "../pages/customer/profile/Settings";
 import Security from "../pages/customer/profile/Security";
@@ -24,51 +27,26 @@ import PaymentHistory from "../pages/customer/profile/PaymentHistory";
 import LightingPage from "../pages/customer/LightingPage";
 import ChairPage from "../pages/customer/ChairPage";
 import TablePage from "../pages/customer/TablePage";
-
 import Cart from "../pages/customer/cart";
 import CheckoutSuccess from "../pages/customer/checkout-success";
+
+import StaffOrderManagement from "../pages/staff/order";
+import ChatBot from "../pages/staff/ChatBot";
 
 export const router = createBrowserRouter([
   {
     path: "",
     element: <CustomerLayout />,
     children: [
-      {
-        path: "/",
-        element: <HomePage />,
-      },
-      {
-        path: "/about",
-        element: <About />,
-      },
-      {
-        path: "/shop",
-        element: <Shop />,
-      },
-      {
-        path: "/product/:id",
-        element: <ProductDetail />,
-      },
-      {
-        path: "/blog",
-        element: <BlogDetail />,
-      },
-      {
-        path: "/lighting",
-        element: <LightingPage />,
-      },
-      {
-        path: "/chairs",
-        element: <ChairPage />,
-      },
-      {
-        path: "/tables",
-        element: <TablePage />,
-      },
-      {
-        path: "/lamps",
-        element: <LightingPage />,
-      },
+      { path: "/", element: <HomePage /> },
+      { path: "/about", element: <About /> },
+      { path: "/shop", element: <Shop /> },
+      { path: "/product/:id", element: <ProductDetail /> },
+      { path: "/blog", element: <BlogDetail /> },
+      { path: "/lighting", element: <LightingPage /> },
+      { path: "/chairs", element: <ChairPage /> },
+      { path: "/tables", element: <TablePage /> },
+      { path: "/lamps", element: <LightingPage /> },
       {
         path: "/profile",
         element: <Profile />,
@@ -81,52 +59,30 @@ export const router = createBrowserRouter([
           { path: "orders", element: <Orders /> },
         ],
       },
-      {
-        path: "/cart",
-        element: <Cart />,
-      },
+      { path: "/cart", element: <Cart /> },
     ],
   },
   {
     path: "/admin",
     element: <AdminLayout />,
     children: [
-      {
-        path: "customer",
-        element: <CustomerManagement />,
-      },
-      {
-        path: "furniture",
-        element: <FurnitureManagement />,
-      },
-      {
-        path: "category",
-        element: <CategoryManagement />,
-      },
-      {
-        path: "order",
-        element: <OrderManagement />,
-      },
-      {
-        path: "dashboard",
-        element: <Dashboard />,
-      },
-      {
-        path: "top-selling",
-        element: <TopSelling />,
-      },
+      { path: "customer", element: <CustomerManagement /> },
+      { path: "furniture", element: <FurnitureManagement /> },
+      { path: "category", element: <CategoryManagement /> },
+      { path: "order", element: <OrderManagement /> },
+      { path: "dashboard", element: <Dashboard /> },
+      { path: "top-selling", element: <TopSelling /> },
     ],
   },
   {
-    path: "login",
-    element: <Login />,
+    path: "/staff",
+    element: <StaffLayout />,
+    children: [
+      { path: "chat", element: <ChatBot /> },
+      { path: "order", element: <StaffOrderManagement /> },
+    ],
   },
-  {
-    path: "register",
-    element: <Register />,
-  },
-  {
-    path: "checkout",
-    element: <CheckoutSuccess />,
-  },
+  { path: "login", element: <Login /> },
+  { path: "register", element: <Register /> },
+  { path: "checkout", element: <CheckoutSuccess /> },
 ]);
