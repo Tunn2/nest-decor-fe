@@ -66,12 +66,12 @@ const AdminLayout = () => {
       label: "Sản phẩm bán chạy",
       onClick: () => navigate("/admin/top-selling"),
     },
-    {
-      key: "booking",
-      icon: <FileDoneOutlined />,
-      label: "Quản lí đơn hàng",
-      onClick: () => navigate("/admin/order"),
-    },
+    // {
+    //   key: "booking",
+    //   icon: <FileDoneOutlined />,
+    //   label: "Quản lí đơn hàng",
+    //   onClick: () => navigate("/admin/order"),
+    // },
     {
       key: "category",
       icon: <AppstoreOutlined />,
