@@ -1,47 +1,51 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../../redux/features/cartSlice";
+import { toast } from "react-toastify";
 import "./index.css";
 
-function Star({ className = "", filled = false, ...props }) {
+const API_BASE = import.meta.env.VITE_BASE_URL;
+
+function Star({ filled = false }) {
   return (
-    <svg className={`star-detail ${filled ? "star-filled-detail" : "star-empty-detail"} ${className}`} fill={filled ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24" {...props}>
+    <svg className={`star-detail ${filled ? "star-filled-detail" : "star-empty-detail"}`} fill={filled ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
       <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
     </svg>
   );
 }
 
-function ArrowLeft({ className = "", ...props }) {
+function ArrowLeft() {
   return (
-    <svg className={`back-icon ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+    <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <line x1="19" y1="12" x2="5" y2="12" />
       <polyline points="12,19 5,12 12,5" />
     </svg>
   );
 }
 
-function Minus(props) {
+function Minus() {
   return (
-    <svg className="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+    <svg className="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <line x1="5" y1="12" x2="19" y2="12" />
     </svg>
   );
 }
 
-function Plus(props) {
+function Plus() {
   return (
-    <svg className="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+    <svg className="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <line x1="12" y1="5" x2="12" y2="19" />
       <line x1="5" y1="12" x2="19" y2="12" />
     </svg>
   );
 }
 
-function Heart(props) {
+function Heart() {
   return (
-    <svg className="heart-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+    <svg className="heart-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
     </svg>
   );
@@ -49,6 +53,8 @@ function Heart(props) {
 
 function ProductDetail() {
   const { id } = useParams();
+  const dispatch = useDispatch();
+
   const [product, setProduct] = useState(null);
   const [categoryName, setCategoryName] = useState("");
   const [quantity, setQuantity] = useState(1);
@@ -58,31 +64,42 @@ function ProductDetail() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/api/Furniture/${id}`);
+        const res = await axios.get(`${API_BASE}/Furniture/${id}`);
         setProduct(res.data);
 
         if (res.data.categoryId) {
-          const cat = await axios.get(`https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/api/Categories/${res.data.categoryId}`);
+          const cat = await axios.get(`${API_BASE}/Categories/${res.data.categoryId}`);
           setCategoryName(cat.data.name);
         }
       } catch (err) {
-        console.error("❌ Error fetching product or category:", err);
+        console.error("❌ Lỗi khi lấy sản phẩm hoặc danh mục:", err);
       }
     };
 
     fetchProduct();
   }, [id]);
 
-  const renderStars = (rating = 5, reviewCount = 0) => (
-    <div className="product-rating-detail">
-      <div className="rating-stars-detail">
-        {[...Array(5)].map((_, i) => (
-          <Star key={i} filled={i < rating} />
-        ))}
-      </div>
-      <span className="rating-count-detail">({reviewCount})</span>
-    </div>
-  );
+  const handleAddToCart = () => {
+    if (!product) return;
+
+    dispatch(
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.basePrice,
+        quantity,
+        image: product.imageUrl || "/placeholder.svg",
+        categoryId: product.categoryId,
+        defaultDimensions: {
+          height: product.sizeConfig?.defaultHeight || 0,
+          width: product.sizeConfig?.defaultWidth || 0,
+          length: product.sizeConfig?.defaultLength || 0,
+        },
+      })
+    );
+
+    toast.success("Đã thêm vào giỏ hàng!");
+  };
 
   const handleQuantityChange = (change) => {
     setQuantity(Math.max(1, quantity + change));
@@ -92,7 +109,7 @@ function ProductDetail() {
     return `${new Intl.NumberFormat("vi-VN").format(value)} ₫`;
   };
 
-  if (!product) return <div>Loading...</div>;
+  if (!product) return <div>Đang tải sản phẩm...</div>;
 
   const images = product?.images?.length ? product.images : [product.imageUrl];
 
@@ -101,7 +118,7 @@ function ProductDetail() {
       <div className="product-detail-content">
         <Link to="/shop" className="back-button">
           <ArrowLeft />
-          Back to Shop
+          Quay lại cửa hàng
         </Link>
 
         <div className="product-layout">
@@ -115,7 +132,7 @@ function ProductDetail() {
                 >
                   <img
                     src={img || "/placeholder.svg"}
-                    alt={`Thumb ${i}`}
+                    alt={`Ảnh ${i}`}
                     className="thumbnail-image"
                     onError={(e) => (e.target.src = "/placeholder.svg")}
                   />
@@ -134,12 +151,21 @@ function ProductDetail() {
 
           <div>
             <h1 className="product-title">{product.name}</h1>
-            {renderStars()}
+
+            <div className="product-rating-detail">
+              <div className="rating-stars-detail">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} filled={i < 4} />
+                ))}
+              </div>
+              <span className="rating-count-detail">(5)</span>
+            </div>
+
             <div className="price-container">
               <span className="price-amount">{formatVND(product.basePrice)}</span>
             </div>
 
-            <p className="product-description">{product.description || "abc"}</p>
+            <p className="product-description">{product.description || "Không có mô tả"}</p>
 
             <div className="quantity-cart-container">
               <div className="quantity-selector">
@@ -153,22 +179,24 @@ function ProductDetail() {
                 />
                 <button onClick={() => handleQuantityChange(1)} className="quantity-button"><Plus /></button>
               </div>
-              <button className="add-to-cart-button">Add to cart</button>
+              <button className="add-to-cart-button" onClick={handleAddToCart}>
+                Thêm vào giỏ hàng
+              </button>
             </div>
 
             <button className="wishlist-button">
-              <Heart /> Add to wishlist
+              <Heart /> Thêm vào yêu thích
             </button>
 
             <div className="product-meta">
               <div>
-                <span className="meta-label">Category: </span>
-                <span className="meta-value">{categoryName || "N/A"}</span>
+                <span className="meta-label">Danh mục: </span>
+                <span className="meta-value">{categoryName || "Không rõ"}</span>
               </div>
               <div>
-                <span className="meta-label">Color: </span>
+                <span className="meta-label">Màu sắc: </span>
                 <span className="meta-value">
-                  {product.color || "Unknown"}
+                  {product.color || "Không rõ"}
                   {product.color && (
                     <span
                       className="color-chip"
@@ -191,22 +219,26 @@ function ProductDetail() {
                   onClick={() => setActiveTab(tab)}
                   className={`tab-button ${activeTab === tab ? "tab-active" : "tab-inactive"}`}
                 >
-                  {tab === "additional" ? "Additional information" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  {tab === "additional"
+                    ? "Thông tin bổ sung"
+                    : tab === "description"
+                    ? "Mô tả"
+                    : "Xem trước"}
                 </button>
               ))}
             </nav>
           </div>
 
           <div className="tab-content">
-            {activeTab === "description" && <p>{product.description || "abc"}</p>}
+            {activeTab === "description" && <p>{product.description || "Không có mô tả chi tiết."}</p>}
             {activeTab === "additional" && (
               <div>
-                <p>Material: {product.material}</p>
-                <p>Color: {product.color}</p>
-                <p>Size (cm): {product.sizeConfig?.defaultLength} x {product.sizeConfig?.defaultWidth} x {product.sizeConfig?.defaultHeight}</p>
+                <p>Chất liệu: {product.material || "Không rõ"}</p>
+                <p>Màu sắc: {product.color || "Không rõ"}</p>
+                <p>Kích thước (cm): {product.sizeConfig?.defaultLength} x {product.sizeConfig?.defaultWidth} x {product.sizeConfig?.defaultHeight}</p>
               </div>
             )}
-            {activeTab === "preview" && <p>Preview content would go here.</p>}
+            {activeTab === "preview" && <p>Phần xem trước sẽ được hiển thị tại đây.</p>}
           </div>
         </div>
       </div>

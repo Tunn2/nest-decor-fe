@@ -5,44 +5,44 @@ const Sidebar = () => {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.widget}>
-        <h4>Search</h4>
-        <input type="text" placeholder="Search..." className={styles.searchInput} />
+        <h4>Tìm kiếm</h4>
+        <input type="text" placeholder="Nhập từ khóa..." className={styles.searchInput} />
       </div>
 
       <div className={styles.widget}>
-        <h4>Featured Highlight</h4>
-        <img src="/assets/bl3.webp" alt="Side Sofa" className={styles.sideImage} />
-        <p>Discover our best-selling sofa set for modern living spaces, now trending in 2025.</p>
+        <h4>Nổi bật</h4>
+        <img src="/assets/bl3.webp" alt="Ghế Sofa bên cạnh" className={styles.sideImage} />
+        <p>Bộ sofa bán chạy nhất cho không gian sống hiện đại, đang là xu hướng năm 2025.</p>
       </div>
 
       <div className={styles.widget}>
-        <h4>Categories</h4>
+        <h4>Danh mục</h4>
         <ul className={styles.categoryList}>
-          <li>Ceiling (25)</li>
-          <li>Floor (25)</li>
-          <li>LED (25)</li>
-          <li>Modern (25)</li>
-          <li>Retro (25)</li>
-          <li>Wood (25)</li>
+          <li>Trần nhà (25)</li>
+          <li>Sàn nhà (25)</li>
+          <li>Đèn LED (25)</li>
+          <li>Hiện đại (25)</li>
+          <li>Phong cách cổ (25)</li>
+          <li>Gỗ (25)</li>
         </ul>
       </div>
 
       <div className={styles.widget}>
-        <h4>Recent Posts</h4>
+        <h4>Bài viết gần đây</h4>
         <ul className={styles.recentList}>
-          <li>New Wooden Furniture Arrivals</li>
-          <li>Top 5 Living Room Essentials</li>
-          <li>How to Design a Cozy Minimalist Space</li>
+          <li>Hàng mới: Nội thất gỗ cao cấp</li>
+          <li>Top 5 vật dụng không thể thiếu cho phòng khách</li>
+          <li>Cách thiết kế không gian tối giản ấm cúng</li>
         </ul>
       </div>
 
       <div className={styles.widget}>
-        <h4>Tags</h4>
+        <h4>Thẻ phổ biến</h4>
         <div className={styles.tags}>
           <span>sofa</span>
-          <span>clean</span>
-          <span>wood</span>
-          <span>interior</span>
+          <span>làm sạch</span>
+          <span>gỗ</span>
+          <span>nội thất</span>
         </div>
       </div>
     </aside>
