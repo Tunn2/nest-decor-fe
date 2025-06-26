@@ -132,15 +132,17 @@ function Cart() {
         customLength: item.customLength || item.defaultDimensions?.length || 0,
       })),
       shippingDetail: shippingDetails,
-      totalAmount: totalAmount,
-      totalQuantity: totalQuantity,
     };
 
     try {
       const res = await axios.post(
-        `https://exe-api-dev-bcfpenbhf2f8a9cc.southeastasia-01.azurewebsites.net/api/Orders`,
+        `${import.meta.env.VITE_BASE_URL}/Orders`,
         checkoutData
       );
+      const paymentLink = res.data.paymentUrl;
+
+      window.location.href = paymentLink;
+
       console.log(res);
     } catch (error) {
       console.log(error);
