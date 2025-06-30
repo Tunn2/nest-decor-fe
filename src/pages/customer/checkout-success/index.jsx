@@ -28,15 +28,28 @@ function CheckoutSuccess() {
     () => `ORD-${Date.now().toString().slice(-8)}`
   );
 
+  // Lưu thông tin đơn hàng trước khi xóa cart
+  const [orderInfo, setOrderInfo] = useState({
+    items: [],
+    total: 0,
+    quantity: 0,
+  });
+
   useEffect(() => {
-    // Clear cart after successful checkout
-    dispatch(clearCart());
+    // Lưu thông tin đơn hàng ngay khi component mount
+    setOrderInfo({
+      items: cartItems,
+      total: totalAmount,
+      quantity: totalQuantity,
+    });
 
     // Countdown timer
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
+          // Xóa cart khi chuyển về home
+          dispatch(clearCart());
           navigate("/");
           return 0;
         }
@@ -45,9 +58,11 @@ function CheckoutSuccess() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [navigate, dispatch]);
+  }, [navigate, dispatch, cartItems, totalAmount, totalQuantity]);
 
   const handleRedirectNow = () => {
+    // Xóa cart khi user click về home
+    dispatch(clearCart());
     navigate("/");
   };
 
@@ -115,7 +130,7 @@ function CheckoutSuccess() {
                   </svg>
                   Tổng số sản phẩm
                 </span>
-                <span className="summary-value">{totalQuantity}</span>
+                <span className="summary-value">{orderInfo.quantity}</span>
               </div>
 
               <div className="summary-row">
@@ -138,7 +153,7 @@ function CheckoutSuccess() {
                   Tổng tiền hàng
                 </span>
                 <span className="summary-value">
-                  {formatPriceVND(totalAmount)}
+                  {formatPriceVND(orderInfo.total)}
                 </span>
               </div>
 
@@ -178,11 +193,34 @@ function CheckoutSuccess() {
               <div className="total-row">
                 <span className="total-label">Tổng thanh toán</span>
                 <span className="total-amount">
-                  {formatPriceVND(totalAmount)}
+                  {formatPriceVND(orderInfo.total)}
                 </span>
               </div>
             </div>
           </div>
+
+          {/* Order Items List - Thêm phần này để hiển thị chi tiết sản phẩm */}
+          {orderInfo.items.length > 0 && (
+            <div className="order-items-card">
+              <h3>Sản phẩm đã đặt</h3>
+              <div className="order-items-list">
+                {orderInfo.items.map((item) => (
+                  <div key={item.id} className="order-item">
+                    <div className="item-image">
+                      <img src={item.image} alt={item.name} />
+                    </div>
+                    <div className="item-details">
+                      <h4>{item.name}</h4>
+                      <p>Số lượng: {item.quantity}</p>
+                      <p className="item-price">
+                        {formatPriceVND(item.price * item.quantity)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Next Steps */}
           <div className="next-steps-card">
@@ -312,7 +350,11 @@ function CheckoutSuccess() {
               Về trang chủ ngay
             </button>
 
-            <Link to="/shop" className="redirect-btn secondary">
+            <Link
+              to="/shop"
+              className="redirect-btn secondary"
+              onClick={() => dispatch(clearCart())}
+            >
               <svg
                 width="18"
                 height="18"
