@@ -69,7 +69,7 @@ export const router = createBrowserRouter([
       { path: "customer", element: <CustomerManagement /> },
       { path: "furniture", element: <FurnitureManagement /> },
       { path: "category", element: <CategoryManagement /> },
-      //{ path: "order", element: <OrderManagement /> },
+      { path: "order", element: <OrderManagement /> },
       { path: "dashboard", element: <Dashboard /> },
       { path: "top-selling", element: <TopSelling /> },
     ],
