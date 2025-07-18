@@ -7,11 +7,10 @@ import {
   HomeOutlined,
   LogoutOutlined,
   DashboardOutlined,
-  BarChartOutlined
+  BarChartOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
-import { Outlet, useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/features/authSlice";
 
@@ -21,10 +20,8 @@ const AdminLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const location = useLocation();
   const pathKey = location.pathname.split("/")[2] || "home";
-
 
   const {
     token: { colorBgContainer },
@@ -66,12 +63,12 @@ const AdminLayout = () => {
       label: "Sản phẩm bán chạy",
       onClick: () => navigate("/admin/top-selling"),
     },
-    // {
-    //   key: "booking",
-    //   icon: <FileDoneOutlined />,
-    //   label: "Quản lí đơn hàng",
-    //   onClick: () => navigate("/admin/order"),
-    // },
+    {
+      key: "booking",
+      icon: <FileDoneOutlined />,
+      label: "Quản lí đơn hàng",
+      onClick: () => navigate("/admin/order"),
+    },
     {
       key: "category",
       icon: <AppstoreOutlined />,
@@ -87,58 +84,82 @@ const AdminLayout = () => {
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
         theme="dark"
+        width={230}
+        style={{
+          background: "#001529",
+          display: "flex",
+          flexDirection: "column",
+        }}
       >
         <div
           style={{
             height: 64,
-            margin: "16px",
-            color: "#fff",
-            textAlign: "center",
-            fontSize: 16,
-            fontWeight: "bold",
-            lineHeight: "32px",
-            background: "rgba(255,255,255,0.05)",
+            margin: 16,
+            background: "rgba(255, 255, 255, 0.05)",
             borderRadius: 8,
-            paddingTop: 16,
+            textAlign: "center",
+            fontSize: 18,
+            color: "#fff",
+            fontWeight: 600,
+            lineHeight: "64px",
+            letterSpacing: 1,
           }}
         >
           Admin
         </div>
+
         <Menu
-          mode="inline"
           theme="dark"
+          mode="inline"
           selectedKeys={[pathKey]}
           items={menuItems}
+          style={{ flex: 1, borderRight: 0 }}
         />
-        <Menu
-          theme="dark"
-          mode="inline"
-          style={{ marginTop: "auto", borderTop: "1px solid #444" }}
+
+        <div
+          style={{
+            borderTop: "1px solid #2f3e55",
+            padding: "12px 16px",
+            background: "#001529",
+          }}
         >
-          <Menu.Item
-            key="logout"
-            icon={<LogoutOutlined />}
-            danger
-            onClick={handleLogout}
-          >
-            Đăng xuất
-          </Menu.Item>
-        </Menu>
+          <Menu theme="dark" mode="inline" selectedKeys={[]}>
+            <Menu.Item
+              key="logout"
+              icon={<LogoutOutlined />}
+              danger
+              onClick={handleLogout}
+              style={{ fontWeight: 500 }}
+            >
+              Đăng xuất
+            </Menu.Item>
+          </Menu>
+        </div>
       </Sider>
 
       <Layout>
         <Content
           style={{
-            margin: "16px",
-            padding: "24px",
+            margin: 16,
+            padding: 24,
             background: colorBgContainer,
-            borderRadius: "8px",
-            minHeight: 280,
+            borderRadius: 10,
+            minHeight: 360,
           }}
         >
           <Outlet />
         </Content>
-        <Footer style={{ textAlign: "center", color: "#888", fontSize: 14 }}>
+
+        <Footer
+          style={{
+            textAlign: "center",
+            color: "#aaa",
+            fontSize: 13,
+            padding: 16,
+            background: "#f5f5f5",
+            borderTop: "1px solid #e8e8e8",
+          }}
+        >
           © {new Date().getFullYear()} DecorNest. All rights reserved.
         </Footer>
       </Layout>

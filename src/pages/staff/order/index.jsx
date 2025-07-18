@@ -9,7 +9,8 @@ import {
   Space,
   Button,
   Modal,
-  Descriptions, Divider
+  Descriptions,
+  Divider,
 } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -17,20 +18,57 @@ import dayjs from "dayjs";
 const { Title } = Typography;
 const { Option } = Select;
 
-const StaffOrderManagement = () => {
+const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState("");
   const [detailModal, setDetailModal] = useState(false);
   const [orderDetail, setOrderDetail] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const pageSize = 10;
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (page = 1) => {
     try {
       setLoading(true);
-      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/Orders`);
-      setOrders(res.data.items || []);
+      const res = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/Orders?pageIndex=${page}`
+      );
+      const rawOrders = res.data.items || [];
+      setTotalCount(res.data.totalCount || 0);
+
+      const userMap = {};
+      const enrichedOrders = await Promise.all(
+        rawOrders.map(async (order) => {
+          const uid = order.userId;
+          if (!userMap[uid]) {
+            const [userRes, userOrdersRes] = await Promise.all([
+              axios.get(`${import.meta.env.VITE_BASE_URL}/Users/${uid}`),
+              axios.get(`${import.meta.env.VITE_BASE_URL}/Orders/user/${uid}`),
+            ]);
+            const phone =
+              userOrdersRes.data.items?.[0]?.shippingDetail?.phoneNumber ||
+              "N/A";
+            userMap[uid] = {
+              fullName: userRes.data.fullName,
+              email: userRes.data.email,
+              phone,
+            };
+          }
+          const user = userMap[uid];
+          return {
+            ...order,
+            userFullName: user.fullName,
+            userEmail: user.email,
+            userPhoneNumber: user.phone,
+          };
+        })
+      );
+
+      setOrders(enrichedOrders);
+      setCurrentPage(page);
     } catch (error) {
-      console.error("Lỗi lấy danh sách đơn hàng:", error);
+      console.error("Lỗi khi lấy đơn hàng:", error);
       message.error("Không thể tải danh sách đơn hàng");
     } finally {
       setLoading(false);
@@ -39,7 +77,7 @@ const StaffOrderManagement = () => {
 
   const fetchOrdersByUser = async () => {
     if (!userId) {
-      fetchOrders();
+      fetchOrders(1);
       return;
     }
     try {
@@ -47,10 +85,31 @@ const StaffOrderManagement = () => {
       const res = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/Orders/user/${userId}`
       );
-      setOrders(res.data.items || []);
+      const rawOrders = res.data.items || [];
+
+      const userRes = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/Users/${userId}`
+      );
+      const user = {
+        fullName: userRes.data.fullName,
+        email: userRes.data.email,
+        phone:
+          rawOrders?.[0]?.shippingDetail?.phoneNumber ||
+          "N/A",
+      };
+
+      const enrichedOrders = rawOrders.map((order) => ({
+        ...order,
+        userFullName: user.fullName,
+        userEmail: user.email,
+        userPhoneNumber: user.phone,
+      }));
+
+      setOrders(enrichedOrders);
+      setTotalCount(enrichedOrders.length);
+      setCurrentPage(1);
     } catch (error) {
-      console.error("Lỗi khi lấy đơn theo user:", error);
-      message.error("Không thể tải đơn theo người dùng");
+      message.error("Không thể tải đơn theo user");
     } finally {
       setLoading(false);
     }
@@ -64,7 +123,6 @@ const StaffOrderManagement = () => {
       setOrderDetail(res.data);
       setDetailModal(true);
     } catch (err) {
-      console.error("Lỗi khi lấy chi tiết đơn hàng:", err);
       message.error("Không thể tải chi tiết đơn hàng");
     }
   };
@@ -75,9 +133,8 @@ const StaffOrderManagement = () => {
         `${import.meta.env.VITE_BASE_URL}/Orders/${orderId}/status?status=${newStatus}`
       );
       message.success("Cập nhật trạng thái thành công");
-      fetchOrders();
+      fetchOrders(currentPage);
     } catch (err) {
-      console.error("Lỗi cập nhật trạng thái:", err);
       message.error("Không thể cập nhật trạng thái");
     }
   };
@@ -95,14 +152,23 @@ const StaffOrderManagement = () => {
     },
     {
       title: "Khách hàng",
-      dataIndex: "shippingDetail",
-      key: "customer",
-      render: (detail) => detail?.fullName || "N/A",
+      dataIndex: "userFullName",
+      key: "userFullName",
+    },
+    {
+      title: "Email",
+      dataIndex: "userEmail",
+      key: "userEmail",
+    },
+    {
+      title: "SĐT User",
+      dataIndex: "userPhoneNumber",
+      key: "userPhoneNumber",
     },
     {
       title: "Tổng tiền",
       dataIndex: "totalAmount",
-      key: "total",
+      key: "totalAmount",
       render: (amount) =>
         amount.toLocaleString("vi-VN", {
           style: "currency",
@@ -144,7 +210,7 @@ const StaffOrderManagement = () => {
 
   return (
     <Card
-      title={<Title level={4}>📦 Trang Quản lý đơn hàng cho Nhân viên</Title>}
+      title={<Title level={4}>🛠️ Quản lý đơn hàng (Admin)</Title>}
       bordered={false}
       style={{ margin: "0 auto", background: "#fff", borderRadius: 8 }}
     >
@@ -155,7 +221,7 @@ const StaffOrderManagement = () => {
           onChange={(e) => setUserId(e.target.value)}
         />
         <Button onClick={fetchOrdersByUser}>Tìm đơn theo userId</Button>
-        <Button onClick={fetchOrders}>Tải tất cả đơn</Button>
+        <Button onClick={() => fetchOrders(1)}>Tải tất cả đơn</Button>
       </Space>
 
       <Table
@@ -163,29 +229,35 @@ const StaffOrderManagement = () => {
         dataSource={orders}
         rowKey="id"
         loading={loading}
-        pagination={{ pageSize: 5 }}
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          total: totalCount,
+          onChange: (page) => fetchOrders(page),
+        }}
       />
 
       <Modal
         open={detailModal}
         onCancel={() => setDetailModal(false)}
         footer={null}
-        title="📝 Chi tiết đơn hàng"
+        title="📋 Chi tiết đơn hàng"
       >
         {orderDetail ? (
           <>
-            <Descriptions
-              bordered
-              column={1}
-              size="small"
-              labelStyle={{ fontWeight: "bold", width: 120 }}
-            >
-              <Descriptions.Item label="ID đơn hàng">{orderDetail.id}</Descriptions.Item>
-              <Descriptions.Item label="User ID">{orderDetail.userId}</Descriptions.Item>
+            <Descriptions bordered column={1} size="small">
+              <Descriptions.Item label="ID đơn hàng">
+                {orderDetail.id}
+              </Descriptions.Item>
+              <Descriptions.Item label="User ID">
+                {orderDetail.userId}
+              </Descriptions.Item>
               <Descriptions.Item label="Ngày đặt">
                 {dayjs(orderDetail.orderDate).format("HH:mm DD/MM/YYYY")}
               </Descriptions.Item>
-              <Descriptions.Item label="Trạng thái">{orderDetail.status}</Descriptions.Item>
+              <Descriptions.Item label="Trạng thái">
+                {orderDetail.status}
+              </Descriptions.Item>
               <Descriptions.Item label="Tổng tiền">
                 {orderDetail.totalAmount?.toLocaleString("vi-VN", {
                   style: "currency",
@@ -195,12 +267,7 @@ const StaffOrderManagement = () => {
             </Descriptions>
 
             <Divider orientation="left">📦 Thông tin giao hàng</Divider>
-            <Descriptions
-              bordered
-              column={1}
-              size="small"
-              labelStyle={{ fontWeight: "bold", width: 120 }}
-            >
+            <Descriptions bordered column={1} size="small">
               <Descriptions.Item label="Họ tên">
                 {orderDetail.shippingDetail?.fullName || "N/A"}
               </Descriptions.Item>
@@ -219,12 +286,7 @@ const StaffOrderManagement = () => {
             </Descriptions>
 
             <Divider orientation="left">💳 Thanh toán</Divider>
-            <Descriptions
-              bordered
-              column={1}
-              size="small"
-              labelStyle={{ fontWeight: "bold", width: 120 }}
-            >
+            <Descriptions bordered column={1} size="small">
               <Descriptions.Item label="Phương thức">
                 {orderDetail.payment?.method || "N/A"}
               </Descriptions.Item>
@@ -241,4 +303,4 @@ const StaffOrderManagement = () => {
   );
 };
 
-export default StaffOrderManagement;
+export default OrderManagement;
