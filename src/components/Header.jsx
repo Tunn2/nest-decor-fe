@@ -39,7 +39,7 @@ const Header = () => {
         <Link to="/about">Về chúng tôi</Link>
         <Link to="/blog">Blog</Link>
         {isAdmin && (
-          <Link to="/admin/furniture" className={styles.adminLink}>
+          <Link to="/admin/dashboard" className={styles.adminLink}>
             <FaTools className={styles.iconInline} />
             Quản lý shop
           </Link>
